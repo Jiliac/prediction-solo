@@ -3,10 +3,9 @@ import type { NextPage } from "next";
 import Head from "next/head";
 
 import Install from "../components/install";
+import Home from "../components/home";
 
-// const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
-
-const Home: NextPage = () => {
+const Index: NextPage = () => {
   const [isInstall, setInstall] = useState(true);
   useEffect(() => {
     const win = window as any;
@@ -25,8 +24,7 @@ const Home: NextPage = () => {
       <div className="hero min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-5xl font-bold">Hello there</h1>
-            <p className="py-6">The message is: CONTRACT TO SET.</p>
+            <Home />
           </div>
         </div>
       </div>
@@ -34,4 +32,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Index;
