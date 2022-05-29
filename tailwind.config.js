@@ -1,7 +1,7 @@
 module.exports = {
-  content: ["./src/**/*.{html,js}"],
-  theme: {
-    extend: {},
+  content: ["./src/**/*.{html,js,jsx,ts,tsx}"],
+  plugins: [require("@tailwindcss/typography"), require("daisyui")],
+  daisyui: {
+    darkTheme: "light",
   },
-  plugins: [require("daisyui")],
 };

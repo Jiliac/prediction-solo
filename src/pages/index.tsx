@@ -1,20 +1,9 @@
-import { useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
-import Web3 from "web3";
 
-const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+// const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 
 const Home: NextPage = () => {
-  useEffect(() => {
-    const win = window as any;
-    if (!win.ethereum) {
-      return;
-    }
-
-    const web3 = new Web3(win.ethereum);
-  }, []);
-
   return (
     <div>
       <Head>
