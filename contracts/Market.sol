@@ -6,7 +6,7 @@ contract Market {
   address public owner;
   string public name;
 
-  constructor(string memory _name) {
+  constructor(string memory _name) payable {
     owner = msg.sender;
     name = _name;
   }
