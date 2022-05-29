@@ -1,9 +1,20 @@
+import { useState, useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
+
+import Install from "../components/install";
 
 // const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
 
 const Home: NextPage = () => {
+  const [isInstall, setInstall] = useState(true);
+  useEffect(() => {
+    const win = window as any;
+    if (!win.ethereum) setInstall(false);
+  }, []);
+
+  if (!isInstall) return <Install />;
+
   return (
     <div>
       <Head>
