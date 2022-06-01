@@ -1,11 +1,14 @@
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 import "./Token.sol";
 
 /// @custom:security-contact valentin@invisoo.com
 contract Market is Ownable {
+  using SafeMath for uint;
+
   string public name;
 
   uint public constant maxProb = 10000;
@@ -53,8 +56,12 @@ contract Market is Ownable {
     noToken.burnAll();
   }
 
-  // ************************
-  // **** Views for test ****
+  // ***************
+  // **** Views ****
+
+  function probability() public view returns(uint) {
+    // @TODO: n / (y + n)
+  }
 
   function totalSupply() external view returns(uint256 yesTot, uint256 noTot) {
     yesTot = yesToken.totalSupply();
