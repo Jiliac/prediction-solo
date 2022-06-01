@@ -11,8 +11,8 @@ contract Market is Ownable {
   uint public constant maxProb = 10000;
   uint public initProbability;
 
-  YesToken yesToken;
-  NoToken noToken;
+  YesToken public yesToken;
+  NoToken public noToken;
 
   constructor(string memory _name, uint probability) payable {
     name = _name;
@@ -23,7 +23,27 @@ contract Market is Ownable {
 
     require(msg.value > 0, "Need liquidity to be initialized");
     uint initFund = msg.value;
-    yesToken = new YesToken(initFund);
-    noToken = new NoToken(initFund);
+    mint(initFund);
+  }
+
+  // *******************
+  // **** Internals ****
+
+  function mint(uint256 fund) internal {
+    yesToken = new YesToken(fund);
+    noToken = new NoToken(fund);
+  }
+
+  function burnAll() internal {
+    yesToken.burnAll();
+    noToken.burnAll();
+  }
+
+  // ************************
+  // **** Views for test ****
+
+  function totalSupply() external view returns(uint256 yesTot, uint256 noTot) {
+    yesTot = yesToken.totalSupply();
+    noTot = noToken.totalSupply();
   }
 }

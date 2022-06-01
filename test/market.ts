@@ -4,11 +4,11 @@ import { ethers } from "hardhat";
 describe("Market", () => {
   const mockName = "First market name";
   const mockProb = 100;
-  const oneEth = ethers.utils.parseEther("1.0");
+  const someEth = ethers.utils.parseEther("0.8");
 
   it("should do correctly set the address and name", async () => {
     const Market = await ethers.getContractFactory("Market");
-    const market = await Market.deploy(mockName, mockProb, { value: oneEth });
+    const market = await Market.deploy(mockName, mockProb, { value: someEth });
     const [owner] = await ethers.getSigners();
 
     await market.deployed();
@@ -18,10 +18,11 @@ describe("Market", () => {
 
   it("should have the initialized balance", async () => {
     const Market = await ethers.getContractFactory("Market");
-    const market = await Market.deploy("", mockProb, { value: oneEth });
+    const market = await Market.deploy("", mockProb, { value: someEth });
 
     await market.deployed();
-    expect(await ethers.provider.getBalance(market.address)).to.equal(oneEth);
+    expect(await market.initProbability()).to.equal(mockProb);
+    expect(await ethers.provider.getBalance(market.address)).to.equal(someEth);
   });
 
   it("should fail if the probably is too low", async () => {
@@ -43,5 +44,15 @@ describe("Market", () => {
     await expect(Market.deploy(mockName, mockProb)).to.be.revertedWith(
       "Need liquidity to be initialized"
     );
+  });
+
+  it("should mint YES and NO tokens", async () => {
+    const Market = await ethers.getContractFactory("Market");
+    const market = await Market.deploy("", mockProb, { value: someEth });
+
+    await market.deployed();
+    const [yesTot, noTot] = await market.totalSupply();
+    expect(yesTot).to.equal(someEth);
+    expect(noTot).to.equal(someEth);
   });
 });

@@ -17,6 +17,13 @@ contract PredictionToken is ERC20, Ownable {
     _mint(to, amount);
   }
 
+  function sendDividend() public onlyOwner {
+    // Called in case this is the winning token.
+    // @TODO: List all accounts and distribute the fund.
+    // But fund are on the owning address. Seems weird to pay the token
+    // contract first... How to do?
+  }
+
   function burnAll() public onlyOwner {
     // @TODO: List all accounts with all amount and burn them with the _burn
     // function.
