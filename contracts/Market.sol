@@ -26,6 +26,20 @@ contract Market is Ownable {
     mint(initFund);
   }
 
+  // Outcome: true means the better wants to bet on YES.
+  // If outcome is false, the better wants to bet on NO.
+  function bet(bool outcome) payable {
+    address better = msg.sender;
+    uint amount = msg.value;
+    require(amount > 0, "Bet cannot be null");
+
+    // @TODO: compute pre-minting constant
+    mint(amount);
+    // @TODO: resolve on how much token to transfer to the better.
+
+    // @TODO: Emit something?
+  }
+
   // *******************
   // **** Internals ****
 
