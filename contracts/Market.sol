@@ -21,14 +21,14 @@ contract Market is Ownable {
   NoToken public noToken;
 
   constructor(string memory _name, uint probability) payable {
-    name = _name;
-
+    uint initFund = msg.value;
     require(probability > 0, "Need a strictly positive initial probability");
-    require(probability < maxProb, "Probability range from 0 to 10000");
+    require(probability < maxProb, "Probability between 0 and 1 strictly. 18 decimals.");
+    require(initFund > 1e18, "Need enough liquidity to be initialized");
+
+    name = _name;
     initProbability = probability;
 
-    require(msg.value > 0, "Need liquidity to be initialized");
-    uint initFund = msg.value;
     yesToken = new YesToken(initFund);
     noToken = new NoToken(initFund);
 

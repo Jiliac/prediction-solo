@@ -36,14 +36,7 @@ describe("Market", () => {
     const overMaxProb = ethers.utils.parseEther("1.2");
     const Market = await ethers.getContractFactory("Market");
     await expect(Market.deploy(mockName, overMaxProb)).to.be.revertedWith(
-      "Probability range from 0 to 10000"
-    );
-  });
-
-  it("should fail if the probably is too high", async () => {
-    const Market = await ethers.getContractFactory("Market");
-    await expect(Market.deploy(mockName, mockProb)).to.be.revertedWith(
-      "Need liquidity to be initialized"
+      "Probability between 0 and 1 strictly. 18 decimals."
     );
   });
 
@@ -153,11 +146,12 @@ describe("Market", () => {
       );
   });
 
-  xit("should not fail with a low ETH amount", async () => {
+  it("should fail with a low ETH amount", async () => {
     const lowEth = ethers.utils.parseEther(".99");
-
     const Market = await ethers.getContractFactory("Market");
-    const market = await Market.deploy("", mockProb, { value: lowEth });
-    await market.deployed();
+
+    await expect(
+      Market.deploy("", mockProb, { value: lowEth })
+    ).to.be.revertedWith("Need enough liquidity to be initialized");
   });
 });
