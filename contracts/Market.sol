@@ -128,8 +128,13 @@ contract Market is Ownable {
   // **** Views ****
 
   function impliedProbability() public view returns(uint) {
-    // @TODO: n / (y + n)
-    return 0;
+    uint a = initProbability;
+    uint yesTot = yesToken.balanceOf(address(this));
+    uint noTot = noToken.balanceOf(address(this));
+
+    uint numerator = a.mul(noTot);
+    uint denominator = numerator + yesTot.mul(maxProb - a);
+    return numerator.div(denominator);
   }
 
   function tokenBalanceOf(address addr) public view returns (uint yes, uint no) {

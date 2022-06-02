@@ -14,6 +14,7 @@ describe("Market", () => {
     await market.deployed();
     expect(await market.name()).to.equal(mockName);
     expect(await market.owner()).to.equal(owner.address);
+    expect(await market.impliedProbability()).to.equal(mockProb);
   });
 
   it("should have the initialized balance", async () => {
@@ -59,7 +60,7 @@ describe("Market", () => {
     expect(k).to.be.closeTo(someEth, 20);
   });
 
-  it("should ...", async () => {
+  it("should compute the correct bet size", async () => {
     const Market = await ethers.getContractFactory("Market");
     const market = await Market.deploy("", mockProb, { value: someEth });
 
@@ -132,6 +133,9 @@ describe("Market", () => {
     const noBetSize = await market.getNoBetSize(payedForBet);
     const expectedTotSupply = someEth.add(payedForBet).add(payedForBet);
 
+    const ammYes = expectedTotSupply;
+    const ammNo = expectedTotSupply.sub(noBetSize).sub(firstNoBetSize);
+
     await expect(market.connect(better).bet(false, { value: payedForBet }))
       .to.emit(market, "BetMade")
       .withArgs(
@@ -141,9 +145,19 @@ describe("Market", () => {
         noBetSize,
         expectedTotSupply,
         expectedTotSupply,
-        expectedTotSupply,
-        expectedTotSupply.sub(noBetSize).sub(firstNoBetSize)
+        ammYes,
+        ammNo
       );
+
+    const ammYesF = Number(ethers.utils.formatEther(ammYes));
+    const ammNoF = Number(ethers.utils.formatEther(ammNo));
+    const a = 0.3;
+    const expectedImpliedProb = (a * ammNoF) / (a * ammNoF + (1 - a) * ammYesF);
+    const actualImpliedProb = await market.impliedProbability();
+    expect(Number(ethers.utils.formatEther(actualImpliedProb))).to.be.closeTo(
+      expectedImpliedProb,
+      1e-16
+    );
   });
 
   it("should fail with a low ETH amount", async () => {
