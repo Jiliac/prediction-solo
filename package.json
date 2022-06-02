@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.6.0",
+    "@prb/math": "^2.5.0",
     "@tailwindcss/typography": "^0.5.2",
     "@types/react": "^18.0.9",
     "autoprefixer": "^10.4.7",

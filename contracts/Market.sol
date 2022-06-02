@@ -1,15 +1,15 @@
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@prb/math/contracts/PRBMathUD60x18.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "hardhat/console.sol";
 import "./Token.sol";
 
 /// @custom:security-contact valentin@invisoo.com
 contract Market is Ownable {
-  using SafeMath for uint;
+  using PRBMathUD60x18 for uint256;
 
-  uint public constant maxProb = 10000;
+  uint public constant maxProb = 1e18;
 
   string public name;
 
@@ -57,11 +57,12 @@ contract Market is Ownable {
     uint yesTot = yesToken.totalSupply();
     uint noTot = noToken.totalSupply();
 
-    // @TODO: Apply power laws.
-    ammConstant = yesTot * noTot;
+    uint left = yesTot.pow(a);
+    uint right = noTot.pow(maxProb - a);
+    ammConstant = right.mul(left);
   }
 
-  function mint(uint256 fund) internal {
+  function mint(uint fund) internal {
     address contractAddr = address(this);
     yesToken.mint(contractAddr, fund);
     noToken.mint(contractAddr, fund);
@@ -79,7 +80,7 @@ contract Market is Ownable {
     // @TODO: n / (y + n)
   }
 
-  function totalSupply() external view returns(uint256 yesTot, uint256 noTot) {
+  function totalSupply() external view returns(uint yesTot, uint noTot) {
     yesTot = yesToken.totalSupply();
     noTot = noToken.totalSupply();
   }

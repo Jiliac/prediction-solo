@@ -3,8 +3,8 @@ import { ethers } from "hardhat";
 
 describe("Market", () => {
   const mockName = "First market name";
-  const mockProb = 100;
-  const someEth = ethers.utils.parseEther("0.8");
+  const mockProb = ethers.utils.parseEther(".3");
+  const someEth = ethers.utils.parseEther("1.2");
 
   it("should do correctly set the address and name", async () => {
     const Market = await ethers.getContractFactory("Market");
@@ -33,8 +33,9 @@ describe("Market", () => {
   });
 
   it("should fail if the probably is too high", async () => {
+    const overMaxProb = ethers.utils.parseEther("1.2");
     const Market = await ethers.getContractFactory("Market");
-    await expect(Market.deploy(mockName, 10000)).to.be.revertedWith(
+    await expect(Market.deploy(mockName, overMaxProb)).to.be.revertedWith(
       "Probability range from 0 to 10000"
     );
   });
@@ -54,5 +55,22 @@ describe("Market", () => {
     const [yesTot, noTot] = await market.totalSupply();
     expect(yesTot).to.equal(someEth);
     expect(noTot).to.equal(someEth);
+  });
+
+  it("should correctly set the AMM constant", async () => {
+    const Market = await ethers.getContractFactory("Market");
+    const market = await Market.deploy("", mockProb, { value: someEth });
+
+    await market.deployed();
+    const k = await market.ammConstant();
+    expect(k).to.be.closeTo(someEth, 20);
+  });
+
+  xit("should not fail with a low ETH amound", async () => {
+    const lowEth = ethers.utils.parseEther(".2");
+
+    const Market = await ethers.getContractFactory("Market");
+    const market = await Market.deploy("", mockProb, { value: lowEth });
+    await market.deployed();
   });
 });
