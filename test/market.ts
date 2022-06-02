@@ -66,8 +66,30 @@ describe("Market", () => {
     expect(k).to.be.closeTo(someEth, 20);
   });
 
-  xit("should not fail with a low ETH amound", async () => {
-    const lowEth = ethers.utils.parseEther(".2");
+  it("should have correct balances (contract and better) after YES bet", async () => {
+    const payedForBet = ethers.utils.parseEther("0.1");
+    const [owner] = await ethers.getSigners();
+
+    const Market = await ethers.getContractFactory("Market");
+    const market = await Market.deploy("", mockProb, { value: someEth });
+    await market.deployed();
+
+    await expect(market.bet(true, { value: payedForBet }))
+      .to.emit(market, "BetMade")
+      .withArgs(
+        true,
+        owner.address,
+        payedForBet,
+        payedForBet,
+        someEth,
+        someEth,
+        someEth,
+        someEth
+      );
+  });
+
+  xit("should not fail with a low ETH amount", async () => {
+    const lowEth = ethers.utils.parseEther(".99");
 
     const Market = await ethers.getContractFactory("Market");
     const market = await Market.deploy("", mockProb, { value: lowEth });

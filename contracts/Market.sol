@@ -35,6 +35,17 @@ contract Market is Ownable {
     setAMMConstant();
   }
 
+  event BetMade(
+      bool outcome,
+      address better,
+      uint amount,
+      uint betSize,
+      uint yesTot,
+      uint noTot,
+      uint ammYes,
+      uint ammNo
+      );
+
   // Outcome: true means the better wants to bet on YES.
   // If outcome is false, the better wants to bet on NO.
   function bet(bool outcome) public payable {
@@ -42,11 +53,42 @@ contract Market is Ownable {
     uint amount = msg.value;
     require(amount > 0, "Bet cannot be null");
 
-    // @TODO: compute pre-minting constant
-    mint(amount);
-    // @TODO: resolve on how much token to transfer to the better.
+    uint a = initProbability;
+    uint k = ammConstant;
+    uint yesTot = yesToken.totalSupply() + amount;
+    uint noTot = noToken.totalSupply() + amount;
 
-    // @TODO: Emit something?
+    uint betSize;
+    if (outcome) {
+      uint aInv = a.inv();
+      uint numerator = k.pow(aInv);
+      uint denominator = noTot.pow(maxProb - a).pow(aInv);
+      uint toSub = numerator.div(denominator);
+      betSize = yesTot - toSub;
+
+      yesToken.mint(better, betSize);
+      // @TODO: WARNING UNCOMMENT
+      //yesToken.mintToOwner(amount - betSize);
+      noToken.mintToOwner(amount);
+    } else {
+      uint toSub = k.div(yesTot.pow(a)).pow((maxProb - a).inv());
+      betSize = noTot - toSub;
+
+      yesToken.mintToOwner(amount);
+      noToken.mint(better, betSize);
+      noToken.mintToOwner(amount - betSize);
+    }
+
+    emit BetMade(
+        outcome,
+        better,
+        amount,
+        betSize,
+        yesToken.totalSupply(),
+        noToken.totalSupply(),
+        yesToken.balanceOf(address(this)),
+        noToken.balanceOf(address(this))
+        );
   }
 
   // *******************
@@ -60,12 +102,6 @@ contract Market is Ownable {
     uint left = yesTot.pow(a);
     uint right = noTot.pow(maxProb - a);
     ammConstant = right.mul(left);
-  }
-
-  function mint(uint fund) internal {
-    address contractAddr = address(this);
-    yesToken.mint(contractAddr, fund);
-    noToken.mint(contractAddr, fund);
   }
 
   function burnAll() internal {

@@ -17,6 +17,10 @@ contract PredictionToken is ERC20, Ownable {
     _mint(to, amount);
   }
 
+  function mintToOwner(uint256 amount) public onlyOwner {
+    _mint(msg.sender, amount);
+  }
+
   function sendDividend() public onlyOwner {
     // Called in case this is the winning token.
     // @TODO: List all accounts and distribute the fund.
