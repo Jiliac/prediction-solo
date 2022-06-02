@@ -9,10 +9,13 @@ import "./Token.sol";
 contract Market is Ownable {
   using SafeMath for uint;
 
+  uint public constant maxProb = 10000;
+
   string public name;
 
-  uint public constant maxProb = 10000;
+  // AMM variables:
   uint public initProbability;
+  uint public ammConstant;
 
   YesToken public yesToken;
   NoToken public noToken;
@@ -26,12 +29,15 @@ contract Market is Ownable {
 
     require(msg.value > 0, "Need liquidity to be initialized");
     uint initFund = msg.value;
-    mint(initFund);
+    yesToken = new YesToken(initFund);
+    noToken = new NoToken(initFund);
+
+    setAMMConstant();
   }
 
   // Outcome: true means the better wants to bet on YES.
   // If outcome is false, the better wants to bet on NO.
-  function bet(bool outcome) payable {
+  function bet(bool outcome) public payable {
     address better = msg.sender;
     uint amount = msg.value;
     require(amount > 0, "Bet cannot be null");
@@ -46,9 +52,19 @@ contract Market is Ownable {
   // *******************
   // **** Internals ****
 
+  function setAMMConstant() internal {
+    uint a = initProbability;
+    uint yesTot = yesToken.totalSupply();
+    uint noTot = noToken.totalSupply();
+
+    // @TODO: Apply power laws.
+    ammConstant = yesTot * noTot;
+  }
+
   function mint(uint256 fund) internal {
-    yesToken = new YesToken(fund);
-    noToken = new NoToken(fund);
+    address contractAddr = address(this);
+    yesToken.mint(contractAddr, fund);
+    noToken.mint(contractAddr, fund);
   }
 
   function burnAll() internal {
@@ -59,7 +75,7 @@ contract Market is Ownable {
   // ***************
   // **** Views ****
 
-  function probability() public view returns(uint) {
+  function impliedProbability() public view returns(uint) {
     // @TODO: n / (y + n)
   }
 
