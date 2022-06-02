@@ -25,12 +25,25 @@ async function main() {
 
   const payedForBet = ethers.utils.parseEther("0.1");
   const yesBetSize = await market.getYesBetSize(payedForBet);
-  console.log("Expected bet size:", ethers.utils.formatEther(yesBetSize));
+  console.log("Expected YES bet size:", ethers.utils.formatEther(yesBetSize));
 
   const [, better] = await ethers.getSigners();
-  const tx = await market.connect(better).bet(true, { value: payedForBet });
-  const receipt = await tx.wait();
-  console.log(receipt.events);
+  const txY = await market.connect(better).bet(true, { value: payedForBet });
+  const yesReceipt = await txY.wait();
+  console.log("Yes events:", yesReceipt.events);
+
+  const a = await market.initProbability();
+  const k = await market.ammConstant();
+  const [yesTot, noTot] = await market.tokenBalanceOf(market.address);
+  const yesTotF = ethers.utils.formatEther(yesTot);
+  const noTotF = ethers.utils.formatEther(noTot);
+  console.log(`a: ${a} - k: ${k} - y: ${yesTotF} - n: ${noTotF}`);
+
+  const noBetSize = await market.getNoBetSize(payedForBet);
+  console.log("Expected NO bet size:", ethers.utils.formatEther(noBetSize));
+  const txN = await market.connect(better).bet(false, { value: payedForBet });
+  const noReceipt = await txN.wait();
+  console.log("No events:", noReceipt.events);
 }
 
 // We recommend this pattern to be able to use async/await everywhere

@@ -101,8 +101,8 @@ contract Market is Ownable {
   function getYesBetSize(uint amount) public view returns (uint betSize) {
     uint a = initProbability;
     uint k = ammConstant;
-    uint yesTot = yesToken.totalSupply() + amount;
-    uint noTot = noToken.totalSupply() + amount;
+    uint yesTot = yesToken.balanceOf(address(this)) + amount;
+    uint noTot = noToken.balanceOf(address(this)) + amount;
 
     uint aInv = a.inv();
     uint numerator = k.pow(aInv);
@@ -114,8 +114,8 @@ contract Market is Ownable {
   function getNoBetSize(uint amount) public view returns (uint betSize) {
     uint a = initProbability;
     uint k = ammConstant;
-    uint yesTot = yesToken.totalSupply() + amount;
-    uint noTot = noToken.totalSupply() + amount;
+    uint yesTot = yesToken.balanceOf(address(this)) + amount;
+    uint noTot = noToken.balanceOf(address(this)) + amount;
 
     uint aInv = (maxProb - a).inv();
     uint numerator = k.pow(aInv);

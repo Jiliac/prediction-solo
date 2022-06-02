@@ -86,39 +86,6 @@ describe("Market", () => {
 
     const payedForBet = ethers.utils.parseEther("0.1");
     const yesBetSize = await market.getYesBetSize(payedForBet);
-    console.log(ethers.utils.formatEther(yesBetSize));
-    await market.connect(better).bet(true, { value: payedForBet });
-
-    const [marketYes, marketNo] = await market.tokenBalanceOf(market.address);
-    console.log(
-      "Market token balances:",
-      ethers.utils.formatEther(marketYes),
-      ethers.utils.formatEther(marketNo)
-    );
-
-    const [betterYes, betterNo] = await market.tokenBalanceOf(better.address);
-    console.log(
-      "Better token balances:",
-      ethers.utils.formatEther(betterYes),
-      ethers.utils.formatEther(betterNo)
-    );
-
-    const [yesTot, noTot] = await market.totalSupply();
-    console.log(
-      "Total supply:",
-      ethers.utils.formatEther(yesTot),
-      ethers.utils.formatEther(noTot)
-    );
-  });
-
-  it("should have correct balances (contract and better) after YES bet", async () => {
-    const [, better] = await ethers.getSigners();
-    const Market = await ethers.getContractFactory("Market");
-    const market = await Market.deploy("", mockProb, { value: someEth });
-    await market.deployed();
-
-    const payedForBet = ethers.utils.parseEther("0.1");
-    const yesBetSize = await market.getYesBetSize(payedForBet);
     const expectedTotSupply = someEth.add(payedForBet);
 
     await expect(market.connect(better).bet(true, { value: payedForBet }))
@@ -132,6 +99,57 @@ describe("Market", () => {
         expectedTotSupply,
         expectedTotSupply.sub(yesBetSize),
         expectedTotSupply
+      );
+  });
+
+  it("should have correct balances (contract and better) after NO bet", async () => {
+    const [, better] = await ethers.getSigners();
+    const Market = await ethers.getContractFactory("Market");
+    const market = await Market.deploy("", mockProb, { value: someEth });
+    await market.deployed();
+
+    const payedForBet = ethers.utils.parseEther("0.1");
+    const noBetSize = await market.getNoBetSize(payedForBet);
+    const expectedTotSupply = someEth.add(payedForBet);
+
+    await expect(market.connect(better).bet(false, { value: payedForBet }))
+      .to.emit(market, "BetMade")
+      .withArgs(
+        false,
+        better.address,
+        payedForBet,
+        noBetSize,
+        expectedTotSupply,
+        expectedTotSupply,
+        expectedTotSupply,
+        expectedTotSupply.sub(noBetSize)
+      );
+  });
+
+  it("should have correct balances (contract and better) after 2 NO bet", async () => {
+    const [, better] = await ethers.getSigners();
+    const Market = await ethers.getContractFactory("Market");
+    const market = await Market.deploy("", mockProb, { value: someEth });
+    await market.deployed();
+
+    const payedForBet = ethers.utils.parseEther("0.1");
+    const firstNoBetSize = await market.getNoBetSize(payedForBet);
+    await market.connect(better).bet(false, { value: payedForBet });
+
+    const noBetSize = await market.getNoBetSize(payedForBet);
+    const expectedTotSupply = someEth.add(payedForBet).add(payedForBet);
+
+    await expect(market.connect(better).bet(false, { value: payedForBet }))
+      .to.emit(market, "BetMade")
+      .withArgs(
+        false,
+        better.address,
+        payedForBet,
+        noBetSize,
+        expectedTotSupply,
+        expectedTotSupply,
+        expectedTotSupply,
+        expectedTotSupply.sub(noBetSize).sub(firstNoBetSize)
       );
   });
 
