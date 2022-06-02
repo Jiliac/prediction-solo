@@ -53,30 +53,15 @@ contract Market is Ownable {
     uint amount = msg.value;
     require(amount > 0, "Bet cannot be null");
 
-    uint a = initProbability;
-    uint k = ammConstant;
-    uint yesTot = yesToken.totalSupply() + amount;
-    uint noTot = noToken.totalSupply() + amount;
+    uint betSize = outcome ? getYesBetSize(amount) : getNoBetSize(amount);
 
-    uint betSize;
+    yesToken.mintToOwner(amount);
+    noToken.mintToOwner(amount);
+
     if (outcome) {
-      uint aInv = a.inv();
-      uint numerator = k.pow(aInv);
-      uint denominator = noTot.pow(maxProb - a).pow(aInv);
-      uint toSub = numerator.div(denominator);
-      betSize = yesTot - toSub;
-
-      yesToken.mint(better, betSize);
-      // @TODO: WARNING UNCOMMENT
-      //yesToken.mintToOwner(amount - betSize);
-      noToken.mintToOwner(amount);
+      yesToken.transfer(better, betSize);
     } else {
-      uint toSub = k.div(yesTot.pow(a)).pow((maxProb - a).inv());
-      betSize = noTot - toSub;
-
-      yesToken.mintToOwner(amount);
-      noToken.mint(better, betSize);
-      noToken.mintToOwner(amount - betSize);
+      noToken.transfer(better, betSize);
     }
 
     emit BetMade(
@@ -109,11 +94,47 @@ contract Market is Ownable {
     noToken.burnAll();
   }
 
+
+  // *******************************
+  // **** Views for Bet Marking ****
+
+  function getYesBetSize(uint amount) public view returns (uint betSize) {
+    uint a = initProbability;
+    uint k = ammConstant;
+    uint yesTot = yesToken.totalSupply() + amount;
+    uint noTot = noToken.totalSupply() + amount;
+
+    uint aInv = a.inv();
+    uint numerator = k.pow(aInv);
+    uint denominator = noTot.pow(maxProb - a).pow(aInv);
+    uint toSub = numerator.div(denominator);
+    betSize = yesTot - toSub;
+  }
+
+  function getNoBetSize(uint amount) public view returns (uint betSize) {
+    uint a = initProbability;
+    uint k = ammConstant;
+    uint yesTot = yesToken.totalSupply() + amount;
+    uint noTot = noToken.totalSupply() + amount;
+
+    uint aInv = (maxProb - a).inv();
+    uint numerator = k.pow(aInv);
+    uint denominator = yesTot.pow(a).pow(aInv);
+    uint toSub = numerator.div(denominator);
+    betSize = noTot - toSub;
+  }
+
   // ***************
   // **** Views ****
 
   function impliedProbability() public view returns(uint) {
     // @TODO: n / (y + n)
+    return 0;
+  }
+
+  function tokenBalanceOf(address addr) public view returns (uint yes, uint no) {
+    yes = yesToken.balanceOf(addr);
+    no = noToken.balanceOf(addr);
   }
 
   function totalSupply() external view returns(uint yesTot, uint noTot) {
