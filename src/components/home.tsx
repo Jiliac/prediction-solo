@@ -35,7 +35,6 @@ const Home = () => {
   const [betSize, setBetSize] = useState<number | undefined>(undefined);
 
   const getInfo = async () => {
-    console.log("fofofof");
     const { provider, contract } = createContract();
 
     const balance = await provider.getBalance(contractAddress);
@@ -132,6 +131,7 @@ const Home = () => {
               MarketContract.abi,
               signer
             );
+            console.log(contract);
 
             const betSizeEth = ethers.utils.parseEther(betSize.toString());
             // await contract.testF(); // { value: betSizeEth });

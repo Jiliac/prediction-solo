@@ -7,7 +7,7 @@ import "../styles/globals.css";
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={client}>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </WagmiConfig>
   );
 }
