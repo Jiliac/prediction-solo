@@ -30,13 +30,9 @@ const Home = () => {
   useEffect(() => {
     if (!contract) return;
     const f = async () => {
-      try {
-        const i = await contract.impliedProbability();
-        console.log(i);
-        setP(ethers.utils.formatEther(i));
-      } catch (e) {
-        console.log(e);
-      }
+      const i = await contract.impliedProbability();
+      console.log(i);
+      setP(ethers.utils.formatEther(i));
     };
     f();
   }, [contract]);
@@ -45,6 +41,17 @@ const Home = () => {
 
   return (
     <article className="prose">
+      {contract && (
+        <button
+          className="btn"
+          onClick={async () => {
+            await contract.bet(true);
+            // await contract.bet(true, { value: ethers.utils.parseEther("3") });
+          }}
+        >
+          Bet
+        </button>
+      )}
       <p>Contract Address: {contractAddr}</p>
       <p>Prob: {initP}</p>
       <p>Account: {account.address}</p>
