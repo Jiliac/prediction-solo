@@ -14,7 +14,6 @@ const Index: NextPage = () => {
       <div className="hero min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1>Foo</h1>
             <Home />
           </div>
         </div>
