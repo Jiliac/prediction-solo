@@ -1,19 +1,9 @@
-import { useState, useEffect } from "react";
 import type { NextPage } from "next";
 import Head from "next/head";
 
-import Install from "../components/install";
 import Home from "../components/home";
 
 const Index: NextPage = () => {
-  const [isInstall, setInstall] = useState(true);
-  useEffect(() => {
-    const win = window as any;
-    if (!win.ethereum) setInstall(false);
-  }, []);
-
-  if (!isInstall) return <Install />;
-
   return (
     <div>
       <Head>
@@ -24,6 +14,7 @@ const Index: NextPage = () => {
       <div className="hero min-h-screen">
         <div className="hero-content text-center">
           <div className="max-w-md">
+            <h1>Foo</h1>
             <Home />
           </div>
         </div>
