@@ -56,6 +56,28 @@ const Home = () => {
         <p className="py-2">{market.probability * 100}% Chance</p>
         <p className="py-2">Market Asset: {market.balance}</p>
       </div>
+
+      <div className="rounded-xl shadow-xl py-6 px-6 betbox">
+        <div className="form-control mb-6">
+          <label className="label mb-2">
+            <span className="label-text">Enter amount</span>
+          </label>
+          <label className="input-group">
+            <input
+              type="text"
+              placeholder="0.01"
+              className="input input-bordered"
+            />
+            <span>BTC</span>
+          </label>
+        </div>
+        <button className="mx-4 btn btn-lg btn-outline btn-success">
+          Bet No
+        </button>
+        <button className="mx-4 btn btn-lg btn-outline btn-error">
+          Bet Yes
+        </button>
+      </div>
     </>
   );
 };
