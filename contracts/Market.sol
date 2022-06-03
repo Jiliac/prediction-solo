@@ -94,7 +94,6 @@ contract Market is Ownable {
     noToken.burnAll();
   }
 
-
   // *******************************
   // **** Views for Bet Marking ****
 
