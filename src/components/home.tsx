@@ -10,6 +10,8 @@ interface Market {
   name: string;
   balance: string;
   probability: number;
+
+  contract: any;
 }
 
 const createContract = () => {
@@ -24,7 +26,8 @@ const createContract = () => {
 };
 
 const Home = () => {
-  const [market, setMarket] = useState<Market | null>(null);
+  const [market, setMarket] = useState<Market | undefined>(undefined);
+  const [betSize, setBetSize] = useState<number | undefined>(undefined);
 
   useEffect(() => {
     const { provider, contract } = createContract();
@@ -39,6 +42,7 @@ const Home = () => {
         name: name,
         balance: ethers.utils.formatEther(balance),
         probability: probability,
+        contract: contract,
       });
     };
 
@@ -50,7 +54,7 @@ const Home = () => {
 
   return (
     <>
-      <h1 className="text-5xl font-bold">Hello deployed</h1>
+      <h1 className="text-5xl font-bold">Market Deployed</h1>
       <div className="py-6">
         <p className="py-2">Question: {`"${market.name}"`}</p>
         <p className="py-2">{market.probability * 100}% Chance</p>
@@ -60,22 +64,33 @@ const Home = () => {
       <div className="rounded-xl shadow-xl py-6 px-6 betbox">
         <div className="form-control mb-6">
           <label className="label mb-2">
-            <span className="label-text">Enter amount</span>
+            <span className="label-text">Amount:</span>
           </label>
           <label className="input-group">
             <input
-              type="text"
-              placeholder="0.01"
+              type="number"
               className="input input-bordered"
+              placeholder="0.01"
+              value={betSize}
+              onChange={(e) => setBetSize(Number(e.target.value))}
             />
-            <span>BTC</span>
+            <span>Matic</span>
           </label>
         </div>
-        <button className="mx-4 btn btn-lg btn-outline btn-success">
-          Bet No
+
+        <button
+          className="mx-4 btn btn-lg btn-outline btn-success"
+          onClick={async () => {
+            if (!betSize) return;
+            await market.contract.bet(true, {
+              value: ethers.utils.parseEther(betSize.toString()),
+            });
+          }}
+        >
+          Bet Yes
         </button>
         <button className="mx-4 btn btn-lg btn-outline btn-error">
-          Bet Yes
+          Bet No
         </button>
       </div>
     </>
