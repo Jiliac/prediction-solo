@@ -9,6 +9,7 @@ export const ConnectedInfo = () => {
     <>
       <p>Account: {account?.address}</p>
       {activeChain && <p>Connected to {activeChain.name}</p>}
+      {activeChain && <p>{JSON.stringify(activeChain)}</p>}
       <button
         className="btn btn-outline btn-primary"
         onClick={() => disconnect()}

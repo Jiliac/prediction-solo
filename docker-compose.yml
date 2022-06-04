@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.hardhat
+    ports:
+      - 8545:8545
     volumes:
       - ./artifacts:/app/artifacts:z
 
