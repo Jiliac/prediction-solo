@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import type { AppProps } from "next/app";
 import { WagmiConfig } from "wagmi";
 
-import { useClient } from "../utils/providers";
+import { useClient } from "../hooks/providers";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
