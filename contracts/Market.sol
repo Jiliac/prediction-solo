@@ -17,8 +17,14 @@ contract Market is Ownable {
   uint public initProbability;
   uint public ammConstant;
 
+  // Bet Management
   YesToken public yesToken;
   NoToken public noToken;
+
+  // Resolving
+  bool public resolved; // Cannot change the resolved status once set
+  enum Resolution{YES, NO, NA}
+  Resolution public resolvedOutcome;
 
   constructor(string memory _name, uint probability) payable {
     uint initFund = msg.value;
@@ -33,6 +39,8 @@ contract Market is Ownable {
     noToken = new NoToken(initFund);
 
     setAMMConstant();
+
+    resolved = false;
   }
 
   event BetMade(
@@ -48,7 +56,7 @@ contract Market is Ownable {
 
   // Outcome: true means the better wants to bet on YES.
   // If outcome is false, the better wants to bet on NO.
-  function bet(bool outcome) public payable {
+  function bet(bool outcome) external payable {
     address better = msg.sender;
     uint amount = msg.value;
     require(amount > 0, "Bet cannot be null");
@@ -76,6 +84,23 @@ contract Market is Ownable {
         );
   }
 
+  function resolve(Resolution outcome) external onlyOwner {
+    require(resolved == false, "Market can only be resolved once");
+    resolved = true;
+    resolvedOutcome = outcome;
+
+    // @TODO: send market funds back to resolver (i.e. owner).
+    // @TODO: Check market coherence? Total supply of token is equal.
+  }
+
+  function claimReward() external {
+    require(resolved == true, "Market is not resolved yet");
+    // 1. Get the amount resolved
+    // 2. require the amount to be above zero
+    // 3. burn the token. (Or transfer back to Market?)
+    // 4. send funds back.
+  }
+
   // *******************
   // **** Internals ****
 
@@ -87,11 +112,6 @@ contract Market is Ownable {
     uint left = yesTot.pow(a);
     uint right = noTot.pow(maxProb - a);
     ammConstant = right.mul(left);
-  }
-
-  function burnAll() internal {
-    yesToken.burnAll();
-    noToken.burnAll();
   }
 
   // *******************************

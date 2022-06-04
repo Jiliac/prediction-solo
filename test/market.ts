@@ -177,4 +177,50 @@ describe("Market", () => {
       );
     });
   });
+
+  describe("resolution", () => {
+    const YesEnum = 0;
+    const NoEnum = 1;
+    // const NaEnum = 2;
+
+    it("should set resolved to true once resolved", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy(mockName, mockProb, {
+        value: someEth,
+      });
+      await market.deployed();
+
+      expect(await market.resolved()).to.equal(false);
+      await market.resolve(YesEnum);
+      expect(await market.resolved()).to.equal(true);
+      expect(await market.resolvedOutcome()).to.equal(YesEnum);
+    });
+
+    it("should not be able to call market solution twice", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy(mockName, mockProb, {
+        value: someEth,
+      });
+      await market.deployed();
+
+      await market.resolve(NoEnum);
+      expect(await market.resolvedOutcome()).to.equal(NoEnum);
+
+      await expect(market.resolve(NoEnum)).to.be.revertedWith(
+        "Market can only be resolved once"
+      );
+    });
+
+    it("should not be able to claim reward on unresolved market", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy(mockName, mockProb, {
+        value: someEth,
+      });
+      await market.deployed();
+
+      await expect(market.claimReward()).to.be.revertedWith(
+        "Market is not resolved yet"
+      );
+    });
+  });
 });
