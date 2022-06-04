@@ -9,6 +9,7 @@ export const Betting = ({ contract }: any) => {
 
     const betSizeEth = ethers.utils.parseEther(betSize);
     await contract.bet(outcome, { value: betSizeEth });
+    setBetSize("");
   };
 
   return (

@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { useAccount, useBalance } from "wagmi";
 
+import { useReadMarket } from "../hooks/contract";
+
 const contractAddr = String(process.env.NEXT_PUBLIC_LOCAL_CONTRACT);
 
 interface Market {
@@ -22,19 +24,20 @@ export const ContractInfo = ({ contract }: any) => {
     addressOrName: contractAddr,
   });
 
+  const name = useReadMarket("name");
+  const impliedProb = useReadMarket("impliedProbability");
+
   useEffect(() => {
     if (!contract) return;
     const f = async () => {
       try {
-        const name = await contract.name();
-        const p = await contract.impliedProbability();
         const usrAddr = account?.address;
         const [userYes, userNo] = await contract.tokenBalanceOf(usrAddr);
         const [yesTot, noTot] = await contract.totalSupply();
 
         setMarket({
           name: name,
-          probability: ethers.utils.formatEther(p),
+          probability: ethers.utils.formatEther(impliedProb),
           userYesBet: ethers.utils.formatEther(userYes),
           userNoBet: ethers.utils.formatEther(userNo),
           yesTokenTotSupply: ethers.utils.formatEther(yesTot),
@@ -45,7 +48,7 @@ export const ContractInfo = ({ contract }: any) => {
       }
     };
     f();
-  }, [contract]);
+  }, [contract, name, impliedProb, account]);
 
   if (!market) return null;
 
