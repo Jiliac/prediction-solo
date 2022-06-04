@@ -26,11 +26,11 @@ const config: HardhatUserConfig = {
   solidity: "0.8.0",
   networks: {
     hardhat: {
-      chainId: 1337,
+      chainId: 31337,
     },
     localhost: {
       url: "http://localhost:8545",
-      chainId: 1337,
+      chainId: 31337,
     },
     ropsten: {
       url: process.env.ROPSTEN_URL || "",

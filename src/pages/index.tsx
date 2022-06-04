@@ -13,7 +13,7 @@ const Index: NextPage = () => {
 
       <div className="hero min-h-screen">
         <div className="hero-content text-center">
-          <div className="max-w-md">
+          <div className="max-w-xl">
             <Home />
           </div>
         </div>

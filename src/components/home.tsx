@@ -19,8 +19,9 @@ const Home = () => {
           className="btn"
           onClick={async () => {
             try {
-              // await contract.bet(true);
-              await contract.bet(true, { value: ethers.utils.parseEther("3") });
+              await contract.bet(true, {
+                value: ethers.utils.parseEther("3"),
+              });
             } catch (e) {
               console.log(e);
             }
