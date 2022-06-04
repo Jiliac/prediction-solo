@@ -3,6 +3,17 @@ services:
   node:
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./docker/Dockerfile.hardhat
     volumes:
-      - .:/app:z
+      - ./artifacts:/app/artifacts:z
+
+  ui:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.ui
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/app/src:z
