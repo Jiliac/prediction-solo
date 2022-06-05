@@ -30,29 +30,39 @@ export const ContractInfo = ({ contract }: any) => {
     if (!contract) return;
 
     const f = async () => {
+      if (!name || !impliedProb || !totalSupply || !account) return;
+
       try {
         const [yesTot, noTot] = totalSupply;
 
         const usrAddr = account?.address;
         const [userYes, userNo] = await contract.tokenBalanceOf(usrAddr);
 
-        setMarket({
+        const market: Market = {
           name: name,
           probability: ethers.utils.formatEther(impliedProb),
           userYesBet: ethers.utils.formatEther(userYes),
           userNoBet: ethers.utils.formatEther(userNo),
           yesTokenTotSupply: ethers.utils.formatEther(yesTot),
           noTokenTotSupply: ethers.utils.formatEther(noTot),
-        });
+        };
+
+        // Debug line:
+        console.log("Market:", JSON.stringify(market));
+        setMarket(market);
       } catch (e) {
-        console.log(e);
+        setMarket(undefined);
+        console.log("Error setting market:", e);
       }
     };
 
     f();
   }, [contract, name, impliedProb, account, totalSupply]);
 
-  if (!market) return null;
+  if (!market) <h2>Contract but no market?</h2>;
+
+  // Debug line:
+  // return <p>Market: {JSON.stringify(market)}</p>;
 
   return (
     <article className="prose">
@@ -71,35 +81,35 @@ export const ContractInfo = ({ contract }: any) => {
             </tr>
             <tr>
               <td>Implied Probability</td>
-              <td>{market.probability}</td>
+              <td>{market?.probability}</td>
             </tr>
             <tr>
               <td>Name</td>
-              <td>{market.name}</td>
+              <td>{market?.name}</td>
             </tr>
             {balanceData && (
               <tr>
                 <td>Contract Balance</td>
                 <td>
-                  {balanceData.formatted} {balanceData.symbol}
+                  {balanceData?.formatted} {balanceData?.symbol}
                 </td>
               </tr>
             )}
             <tr>
               <td>Your Yes Bet</td>
-              <td>{market.userYesBet}</td>
+              <td>{market?.userYesBet}</td>
             </tr>
             <tr>
               <td>Your No Bet</td>
-              <td>{market.userNoBet}</td>
+              <td>{market?.userNoBet}</td>
             </tr>
             <tr>
               <td>Yes Token Total Supply</td>
-              <td>{market.yesTokenTotSupply}</td>
+              <td>{market?.yesTokenTotSupply}</td>
             </tr>
             <tr>
               <td>No Token Total Supply</td>
-              <td>{market.noTokenTotSupply}</td>
+              <td>{market?.noTokenTotSupply}</td>
             </tr>
           </tbody>
         </table>
