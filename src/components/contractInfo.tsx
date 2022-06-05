@@ -30,7 +30,10 @@ export const ContractInfo = ({ contract }: any) => {
     if (!contract) return;
 
     const f = async () => {
-      if (!name || !impliedProb || !totalSupply || !account) return;
+      if (!name || !impliedProb || !totalSupply || !account) {
+        setMarket(undefined);
+        return;
+      }
 
       try {
         const [yesTot, noTot] = totalSupply;
@@ -47,8 +50,6 @@ export const ContractInfo = ({ contract }: any) => {
           noTokenTotSupply: ethers.utils.formatEther(noTot),
         };
 
-        // Debug line:
-        console.log("Market:", JSON.stringify(market));
         setMarket(market);
       } catch (e) {
         setMarket(undefined);

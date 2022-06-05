@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useResolve } from "../hooks/resolveMarket";
+import { useReadMarket } from "../hooks/contract";
 
 const YesEnum = 0;
 const NoEnum = 1;
@@ -6,7 +8,22 @@ const NaEnum = 2;
 
 export const Resolution = () => {
   const [resolving, setResolving] = useState<boolean>(false);
-  const write = (doo: any) => {};
+  const write = useResolve();
+
+  const resolved = useReadMarket("resolved");
+  const resolvedOutcome = useReadMarket("resolvedOutcome");
+
+  if (resolved) {
+    const outcome: string = ["YES", "NO", "N/A"][resolvedOutcome];
+
+    return (
+      <div className="rounded-xl shadow-xl py-6 px-6 betbox mt-10">
+        <article className="prose my-3">
+          <h2>Market is already resolved to {outcome}.</h2>
+        </article>
+      </div>
+    );
+  }
 
   if (!resolving) {
     return (
@@ -31,7 +48,7 @@ export const Resolution = () => {
         <div>
           <button
             className="btn btn-lg btn-primary my-3"
-            onClick={() => write(YesEnum)}
+            onClick={() => write({ args: [YesEnum] })}
           >
             Resolve to YES
           </button>
@@ -39,7 +56,7 @@ export const Resolution = () => {
         <div>
           <button
             className="btn btn-lg btn-primary my-3"
-            onClick={() => write(NoEnum)}
+            onClick={() => write({ args: [NoEnum] })}
           >
             Resolve to NO
           </button>
@@ -47,7 +64,7 @@ export const Resolution = () => {
         <div>
           <button
             className="btn btn-lg btn-primary mt-3"
-            onClick={() => write(NaEnum)}
+            onClick={() => write({ args: [NaEnum] })}
           >
             Resolve to N/A
           </button>
