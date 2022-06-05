@@ -57,6 +57,8 @@ contract Market is Ownable {
   // Outcome: true means the better wants to bet on YES.
   // If outcome is false, the better wants to bet on NO.
   function bet(bool outcome) external payable {
+    require(resolved == false, "Market cannot be betted on once resolved");
+
     address better = msg.sender;
     uint amount = msg.value;
     require(amount > 0, "Bet cannot be null");

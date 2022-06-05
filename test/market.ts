@@ -181,7 +181,7 @@ describe("Market", () => {
   describe("resolution", () => {
     const YesEnum = 0;
     const NoEnum = 1;
-    // const NaEnum = 2;
+    const NaEnum = 2;
 
     it("should set resolved to true once resolved", async () => {
       const Market = await ethers.getContractFactory("Market");
@@ -197,6 +197,21 @@ describe("Market", () => {
     });
 
     it("should not be able to call market solution twice", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy(mockName, mockProb, {
+        value: someEth,
+      });
+      await market.deployed();
+
+      await market.resolve(NaEnum);
+      expect(await market.resolvedOutcome()).to.equal(NaEnum);
+
+      await expect(market.bet(true)).to.be.revertedWith(
+        "Market cannot be betted on once resolved"
+      );
+    });
+
+    it("should not be able to bet after market resolution", async () => {
       const Market = await ethers.getContractFactory("Market");
       const market = await Market.deploy(mockName, mockProb, {
         value: someEth,
