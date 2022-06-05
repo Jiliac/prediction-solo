@@ -6,14 +6,15 @@ import { ContractInfo } from "../components/contractInfo";
 import { ConnectedInfo } from "../components/connectedInfo";
 import { Betting } from "../components/betting";
 import { Events } from "../components/events";
-import { Resolution } from "../components/resolution";
-import { useMarketContract } from "../hooks/contract";
+import { Resolution, ResolvedStatus } from "../components/resolution";
+import { useMarketContract, useReadMarket } from "../hooks/contract";
 import { useIsOwner } from "../hooks/isOwner";
 
 const Index: NextPage = () => {
   const { data: account } = useAccount();
   const contract = useMarketContract();
   const isOwner = useIsOwner();
+  const resolved = useReadMarket("resolved");
 
   if (!account) return <Connect />;
 
@@ -28,7 +29,8 @@ const Index: NextPage = () => {
               <ContractInfo contract={contract} />
             </div>
             <div className="pt-7">
-              <Betting contract={contract} />
+              {!resolved && <Betting contract={contract} />}
+              {resolved && <ResolvedStatus />}
               {isOwner && <Resolution />}
             </div>
           </div>

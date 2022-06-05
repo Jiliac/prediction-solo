@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useResolve } from "../hooks/resolveMarket";
 import { useReadMarket } from "../hooks/contract";
 
@@ -6,24 +6,30 @@ const YesEnum = 0;
 const NoEnum = 1;
 const NaEnum = 2;
 
+export const ResolvedStatus = () => {
+  const resolvedOutcome = useReadMarket("resolvedOutcome");
+  const [outcome, setOutcome] = useState<string>("");
+
+  useEffect(
+    () => setOutcome(["YES", "NO", "N/A"][resolvedOutcome]),
+    [resolvedOutcome]
+  );
+
+  return (
+    <div className="rounded-xl shadow-xl py-6 px-6 betbox mt-10">
+      <article className="prose my-3">
+        <h2>Market is already resolved to {outcome}.</h2>
+      </article>
+    </div>
+  );
+};
+
 export const Resolution = () => {
   const [resolving, setResolving] = useState<boolean>(false);
   const write = useResolve();
 
   const resolved = useReadMarket("resolved");
-  const resolvedOutcome = useReadMarket("resolvedOutcome");
-
-  if (resolved) {
-    const outcome: string = ["YES", "NO", "N/A"][resolvedOutcome];
-
-    return (
-      <div className="rounded-xl shadow-xl py-6 px-6 betbox mt-10">
-        <article className="prose my-3">
-          <h2>Market is already resolved to {outcome}.</h2>
-        </article>
-      </div>
-    );
-  }
+  if (resolved) return null;
 
   if (!resolving) {
     return (
