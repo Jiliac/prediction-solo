@@ -92,10 +92,7 @@ contract Market is Ownable {
     resolved = true;
     resolvedOutcome = outcome;
 
-    // @WARNING: Setting the owner funds based on the AMM constant is a hack.
-    // Works because no one else is providing liquidity. Once liquidity
-    // provider will be allowed, this won't work.
-    uint ownerFunds = ammConstant;
+    uint ownerFunds = doGetRewardAmount(address(this));
     payable(owner()).transfer(ownerFunds);
 
     // @TODO: emit event. Why?
@@ -103,10 +100,25 @@ contract Market is Ownable {
 
   function claimReward() external {
     require(resolved == true, "Market is not resolved yet");
-    // 1. Get the amount resolved
-    // 2. require the amount to be above zero
-    // 3. burn the token. (Or transfer back to Market?)
-    // 4. send funds back.
+
+    uint reward = getRewardAmount();
+    if (reward < 1e9) {
+      // Do not transfer anything for small amount
+      return;
+    }
+
+    address payable user = payable(msg.sender);
+    user.transfer(reward);
+
+    if (resolvedOutcome == Resolution.YES) {
+      yesToken.burn(user, reward);
+    } else if (resolvedOutcome == Resolution.NO) {
+      noToken.burn(user, reward);
+    } else if (resolvedOutcome == Resolution.NA) {
+      require(false, "N/A outcome not yet handled");
+    }
+
+    // @TODO: emit event. Why?
   }
 
   // *******************
@@ -120,6 +132,24 @@ contract Market is Ownable {
     uint left = yesTot.pow(a);
     uint right = noTot.pow(maxProb - a);
     ammConstant = right.mul(left);
+  }
+
+  // ******************************
+  // **** View for Resolution ****
+
+  function getRewardAmount() public view returns(uint) {
+    return doGetRewardAmount(msg.sender);
+  }
+
+  function doGetRewardAmount(address user) internal view returns(uint) {
+    if (resolvedOutcome == Resolution.YES) {
+      return yesToken.balanceOf(user);
+    } else if (resolvedOutcome == Resolution.NO) {
+      return noToken.balanceOf(user);
+    } else if (resolvedOutcome == Resolution.NA) {
+      require(false, "N/A outcome not yet handled");
+    }
+    return 0;
   }
 
   // *******************************

@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -8,24 +8,32 @@ contract PredictionToken is ERC20, Ownable {
   constructor(
     string memory name_,
     string memory symbol_,
-    uint256 initFund
+    uint initFund
   ) ERC20(name_, symbol_) {
     _mint(msg.sender, initFund);
   }
 
-  function mint(address to, uint256 amount) public onlyOwner {
+  function mint(address to, uint amount) external onlyOwner {
     _mint(to, amount);
   }
 
-  function mintToOwner(uint256 amount) public onlyOwner {
-    _mint(msg.sender, amount);
+  function mintToOwner(uint amount) external onlyOwner {
+    _mint(owner(), amount);
+  }
+
+  function burn(address account, uint amount) external onlyOwner {
+    _burn(account, amount);
   }
 }
 
 contract YesToken is PredictionToken {
-  constructor(uint256 initFund) PredictionToken("Yes", "YES", initFund) {}
+  constructor(uint initFund) PredictionToken("Yes", "YES", initFund) {}
 }
 
 contract NoToken is PredictionToken {
-  constructor(uint256 initFund) PredictionToken("No", "NO", initFund) {}
+  constructor(uint initFund) PredictionToken("No", "NO", initFund) {}
+}
+
+contract NaToken is PredictionToken {
+  constructor() PredictionToken("N/A", "NA", 0) {}
 }

@@ -5,6 +5,7 @@ describe("Market", () => {
   const mockName = "First market name";
   const mockProb = ethers.utils.parseEther("0.3");
   const someEth = ethers.utils.parseEther("1.2");
+  const zeroEth = ethers.utils.parseEther("0");
 
   describe("initialization", () => {
     it("should do correctly set the address and name", async () => {
@@ -203,8 +204,8 @@ describe("Market", () => {
       });
       await market.deployed();
 
-      await market.resolve(NaEnum);
-      expect(await market.resolvedOutcome()).to.equal(NaEnum);
+      await market.resolve(NoEnum);
+      expect(await market.resolvedOutcome()).to.equal(NoEnum);
 
       await expect(market.bet(true)).to.be.revertedWith(
         "Market cannot be betted on once resolved"
@@ -252,13 +253,105 @@ describe("Market", () => {
       await market.deployed();
       await market.resolve(NoEnum);
       expect(await ethers.provider.getBalance(market.address)).to.be.closeTo(
-        ethers.utils.parseEther("0"),
+        zeroEth,
         20
       );
       expect(await ethers.provider.getBalance(owner.address)).to.closeTo(
         someEth.add(preResolutionBalance),
         1e14
       );
+    });
+
+    it("should still have bet on balance after resolution", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy(mockName, mockProb, {
+        value: someEth,
+      });
+
+      const [owner, better] = await ethers.getSigners();
+      const preResolutionBalance = await ethers.provider.getBalance(
+        owner.address
+      );
+
+      await market.deployed();
+      const payedForBet = ethers.utils.parseEther("0.1");
+      const noBetSize = await market.getNoBetSize(payedForBet);
+      await market.connect(better).bet(false, { value: payedForBet });
+      const [, ownerExpectedReward] = await market.tokenBalanceOf(
+        market.address
+      );
+
+      await market.resolve(NoEnum);
+
+      expect(await ethers.provider.getBalance(market.address)).to.be.closeTo(
+        noBetSize,
+        20
+      );
+
+      const expectedBalance = preResolutionBalance.add(ownerExpectedReward);
+      const realBalance = await ethers.provider.getBalance(owner.address);
+      expect(realBalance).to.closeTo(expectedBalance, 1e14);
+    });
+
+    it("should pay user after claimed reward", async () => {
+      const [, better] = await ethers.getSigners();
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy("", mockProb, { value: someEth });
+      await market.deployed();
+
+      const payedForBet = ethers.utils.parseEther("0.9");
+      const noBetSize = await market.getNoBetSize(payedForBet);
+      await market.connect(better).bet(false, { value: payedForBet });
+
+      // ** Resolve **
+      await market.resolve(NoEnum);
+      expect(await ethers.provider.getBalance(market.address)).to.be.closeTo(
+        noBetSize,
+        20
+      );
+      expect(await market.connect(better).getRewardAmount()).to.be.closeTo(
+        noBetSize,
+        1e2
+      );
+
+      // ** Better claims reward **
+      const preClaimBalance = await ethers.provider.getBalance(better.address);
+      const expectedPostClaimBalance = preClaimBalance.add(noBetSize);
+
+      await market.connect(better).claimReward();
+      expect(await ethers.provider.getBalance(market.address)).to.be.closeTo(
+        zeroEth,
+        20
+      );
+      const postClaimBalance = await ethers.provider.getBalance(better.address);
+      expect(postClaimBalance).to.be.closeTo(expectedPostClaimBalance, 1e14);
+      expect(await market.connect(better).getRewardAmount()).to.be.closeTo(
+        zeroEth,
+        1e2
+      );
+    });
+
+    it("Should burn token after reward claim", async () => {
+      const [, better] = await ethers.getSigners();
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy("", mockProb, { value: someEth });
+      await market.deployed();
+
+      // Bet and resolve
+      const payedForBet = ethers.utils.parseEther("0.9");
+      const noBetSize = await market.getNoBetSize(payedForBet);
+      await market.connect(better).bet(false, { value: payedForBet });
+      await market.resolve(NoEnum);
+
+      const [, betterNoBalance] = await market.tokenBalanceOf(better.address);
+      expect(betterNoBalance).to.be.closeTo(noBetSize, 20);
+
+      // Claim bet and burn token
+      await market.connect(better).claimReward();
+      const [, postClaimNoBalance] = await market.tokenBalanceOf(
+        better.address
+      );
+      expect(postClaimNoBalance).to.be.closeTo(zeroEth, 20);
     });
   });
 });
