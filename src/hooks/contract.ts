@@ -4,14 +4,17 @@ import MarketContract from "artifacts/contracts/Market.sol/Market.json";
 const contractAddr = String(process.env.NEXT_PUBLIC_LOCAL_CONTRACT);
 
 export const useMarketInfos = () => {
+  const { data: account } = useAccount();
+
   return {
     name: useReadMarket("name"),
     impliedProb: useReadMarket("impliedProbability"),
     totalSupply: useReadMarket("totalSupply"),
+    userBalance: useReadMarket("tokenBalanceOf", [account?.address]),
   };
 };
 
-export const useReadMarket = (func: string): any => {
+export const useReadMarket = (func: string, args?: Array<any>): any => {
   const { data: account } = useAccount();
 
   const { data } = useContractRead(
@@ -20,6 +23,7 @@ export const useReadMarket = (func: string): any => {
     {
       overrides: { from: account?.address },
       watch: true,
+      args: args,
     }
   );
   return data;

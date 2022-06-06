@@ -25,7 +25,7 @@ export const ContractInfo = ({ contract }: any) => {
     watch: true,
   });
 
-  const { name, impliedProb, totalSupply } = useMarketInfos();
+  const { name, impliedProb, totalSupply, userBalance } = useMarketInfos();
   useEffect(() => {
     if (!contract) return;
 
@@ -38,8 +38,7 @@ export const ContractInfo = ({ contract }: any) => {
       try {
         const [yesTot, noTot] = totalSupply;
 
-        const usrAddr = account?.address;
-        const [userYes, userNo] = await contract.tokenBalanceOf(usrAddr);
+        const [userYes, userNo] = userBalance;
 
         const market: Market = {
           name: name,
@@ -58,7 +57,7 @@ export const ContractInfo = ({ contract }: any) => {
     };
 
     f();
-  }, [contract, name, impliedProb, account, totalSupply]);
+  }, [contract, name, impliedProb, account, totalSupply, userBalance]);
 
   if (!market) <h2>Contract but no market?</h2>;
 
