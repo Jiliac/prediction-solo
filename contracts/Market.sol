@@ -30,15 +30,14 @@ contract Market is Ownable {
     uint initFund = msg.value;
     require(probability > 0, "Need a strictly positive initial probability");
     require(probability < maxProb, "Probability between 0 and 1 strictly. 18 decimals.");
-    require(initFund > 1e18, "Need enough liquidity to be initialized");
+    require(initFund > 1e16, "Need enough liquidity to be initialized");
 
     name = _name;
     initProbability = probability;
 
     yesToken = new YesToken(initFund);
     noToken = new NoToken(initFund);
-
-    setAMMConstant();
+    ammConstant = initFund;
 
     resolved = false;
   }
@@ -119,19 +118,6 @@ contract Market is Ownable {
     }
 
     // @TODO: emit event. Why?
-  }
-
-  // *******************
-  // **** Internals ****
-
-  function setAMMConstant() internal {
-    uint a = initProbability;
-    uint yesTot = yesToken.totalSupply();
-    uint noTot = noToken.totalSupply();
-
-    uint left = yesTot.pow(a);
-    uint right = noTot.pow(maxProb - a);
-    ammConstant = right.mul(left);
   }
 
   // ******************************
