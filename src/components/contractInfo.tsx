@@ -62,9 +62,6 @@ export const ContractInfo = ({ contract }: any) => {
 
   if (!market) <h2>Contract but no market?</h2>;
 
-  // Debug line:
-  // return <p>Market: {JSON.stringify(market)}</p>;
-
   return (
     <article className="prose">
       <div className="overflow-x-auto">

@@ -7,6 +7,7 @@ import { ConnectedInfo } from "../components/connectedInfo";
 import { Betting } from "../components/betting";
 import { Events } from "../components/events";
 import { Resolution, ResolvedStatus } from "../components/resolution";
+import { Claim } from "../components/claim";
 import { useMarketContract, useReadMarket } from "../hooks/contract";
 import { useIsOwner } from "../hooks/isOwner";
 
@@ -34,6 +35,12 @@ const Index: NextPage = () => {
               {isOwner && <Resolution />}
             </div>
           </div>
+          {resolved && (
+            <>
+              <div className="divider"></div>
+              <Claim />
+            </>
+          )}
           <div className="divider"></div>
           <Events />
         </div>

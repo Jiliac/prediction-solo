@@ -1,4 +1,4 @@
-import { useContract, useSigner, useContractRead } from "wagmi";
+import { useAccount, useContract, useSigner, useContractRead } from "wagmi";
 import MarketContract from "artifacts/contracts/Market.sol/Market.json";
 
 const contractAddr = String(process.env.NEXT_PUBLIC_LOCAL_CONTRACT);
@@ -12,10 +12,15 @@ export const useMarketInfos = () => {
 };
 
 export const useReadMarket = (func: string): any => {
+  const { data: account } = useAccount();
+
   const { data } = useContractRead(
     { addressOrName: contractAddr, contractInterface: MarketContract.abi },
     func,
-    { watch: true }
+    {
+      overrides: { from: account?.address },
+      watch: true,
+    }
   );
   return data;
 };
