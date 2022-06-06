@@ -18,7 +18,7 @@ async function main() {
     "Will G.R.R. Martin publish in 2022?",
     ethers.utils.parseEther("0.3"),
     {
-      value: ethers.utils.parseEther(".7"),
+      value: ethers.utils.parseEther("7"),
     }
   );
 

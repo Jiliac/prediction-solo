@@ -21,21 +21,6 @@ describe("Market", () => {
       expect(await market.impliedProbability()).to.equal(mockProb);
     });
 
-    it("should be able to deploy with low initial fund", async () => {
-      const lowInitFund = ethers.utils.parseEther(".011");
-      const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
-        value: lowInitFund,
-      });
-
-      await market.deployed();
-      expect(await market.ammConstant()).to.equal(lowInitFund);
-
-      const payedForBet = ethers.utils.parseEther("0.1");
-      await market.getYesBetSize(payedForBet);
-      await market.getNoBetSize(payedForBet);
-    });
-
     it("should have the initialized balance", async () => {
       const Market = await ethers.getContractFactory("Market");
       const market = await Market.deploy("", mockProb, { value: someEth });
@@ -63,7 +48,7 @@ describe("Market", () => {
     });
 
     it("should fail with a low ETH amount", async () => {
-      const lowEth = ethers.utils.parseEther(".00099");
+      const lowEth = ethers.utils.parseEther(".99");
       const Market = await ethers.getContractFactory("Market");
 
       await expect(

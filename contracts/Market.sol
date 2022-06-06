@@ -30,7 +30,7 @@ contract Market is Ownable {
     uint initFund = msg.value;
     require(probability > 0, "Need a strictly positive initial probability");
     require(probability < maxProb, "Probability between 0 and 1 strictly. 18 decimals.");
-    require(initFund > 1e15, "Need enough liquidity to be initialized");
+    require(initFund > 1e18, "Need enough liquidity to be initialized");
 
     name = _name;
     initProbability = probability;
@@ -142,8 +142,6 @@ contract Market is Ownable {
 
   // *******************************
   // **** Views for Bet Marking ****
-
-  uint internal constant ONE = 1e18; // 1000 with 18 decimals.
 
   function getYesBetSize(uint amount) public view returns (uint betSize) {
     uint a = initProbability;
