@@ -237,5 +237,28 @@ describe("Market", () => {
         "Market is not resolved yet"
       );
     });
+
+    it("should send fund to owner after resolution", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy(mockName, mockProb, {
+        value: someEth,
+      });
+
+      const [owner] = await ethers.getSigners();
+      const preResolutionBalance = await ethers.provider.getBalance(
+        owner.address
+      );
+
+      await market.deployed();
+      await market.resolve(NoEnum);
+      expect(await ethers.provider.getBalance(market.address)).to.be.closeTo(
+        ethers.utils.parseEther("0"),
+        20
+      );
+      expect(await ethers.provider.getBalance(owner.address)).to.closeTo(
+        someEth.add(preResolutionBalance),
+        1e14
+      );
+    });
   });
 });

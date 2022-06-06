@@ -52,7 +52,7 @@ export const Events = () => {
 
   return (
     <article className="prose">
-      <h2 className="mb-0 pb-0 mt-4">Events</h2>
+      <h2 className="mb-0 pb-0 mt-4">All Bets</h2>
       <div className="overflow-x-auto">
         <table className="table w-full">
           <thead>

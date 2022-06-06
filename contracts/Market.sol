@@ -88,11 +88,17 @@ contract Market is Ownable {
 
   function resolve(Resolution outcome) external onlyOwner {
     require(resolved == false, "Market can only be resolved once");
+    require(yesToken.totalSupply() == noToken.totalSupply(), "Incoherent market");
     resolved = true;
     resolvedOutcome = outcome;
 
-    // @TODO: send market funds back to resolver (i.e. owner).
-    // @TODO: Check market coherence? Total supply of token is equal.
+    // @WARNING: Setting the owner funds based on the AMM constant is a hack.
+    // Works because no one else is providing liquidity. Once liquidity
+    // provider will be allowed, this won't work.
+    uint ownerFunds = ammConstant;
+    payable(owner()).transfer(ownerFunds);
+
+    // @TODO: emit event. Why?
   }
 
   function claimReward() external {
