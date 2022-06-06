@@ -30,7 +30,7 @@ contract Market is Ownable {
     uint initFund = msg.value;
     require(probability > 0, "Need a strictly positive initial probability");
     require(probability < maxProb, "Probability between 0 and 1 strictly. 18 decimals.");
-    require(initFund > 1e16, "Need enough liquidity to be initialized");
+    require(initFund > 1e15, "Need enough liquidity to be initialized");
 
     name = _name;
     initProbability = probability;
@@ -114,6 +114,7 @@ contract Market is Ownable {
     } else if (resolvedOutcome == Resolution.NO) {
       noToken.burn(user, reward);
     } else if (resolvedOutcome == Resolution.NA) {
+      // @TODO
       require(false, "N/A outcome not yet handled");
     }
 
@@ -133,6 +134,7 @@ contract Market is Ownable {
     } else if (resolvedOutcome == Resolution.NO) {
       return noToken.balanceOf(user);
     } else if (resolvedOutcome == Resolution.NA) {
+      // @TODO
       require(false, "N/A outcome not yet handled");
     }
     return 0;
@@ -140,6 +142,8 @@ contract Market is Ownable {
 
   // *******************************
   // **** Views for Bet Marking ****
+
+  uint internal constant ONE = 1e18; // 1000 with 18 decimals.
 
   function getYesBetSize(uint amount) public view returns (uint betSize) {
     uint a = initProbability;

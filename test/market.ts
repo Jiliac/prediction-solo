@@ -30,6 +30,10 @@ describe("Market", () => {
 
       await market.deployed();
       expect(await market.ammConstant()).to.equal(lowInitFund);
+
+      const payedForBet = ethers.utils.parseEther("0.1");
+      await market.getYesBetSize(payedForBet);
+      await market.getNoBetSize(payedForBet);
     });
 
     it("should have the initialized balance", async () => {
@@ -59,7 +63,7 @@ describe("Market", () => {
     });
 
     it("should fail with a low ETH amount", async () => {
-      const lowEth = ethers.utils.parseEther(".0099");
+      const lowEth = ethers.utils.parseEther(".00099");
       const Market = await ethers.getContractFactory("Market");
 
       await expect(

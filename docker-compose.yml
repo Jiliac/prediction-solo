@@ -7,6 +7,8 @@ services:
     ports:
       - 8545:8545
     volumes:
+      - ./contracts:/app/contracts:z
+      - ./scripts:/app/scripts:z
       - ./artifacts:/app/artifacts:z
 
   ui:
