@@ -20,6 +20,7 @@ contract Market is Ownable {
   // Bet Management
   YesToken public yesToken;
   NoToken public noToken;
+  NaToken public naToken;
 
   // Resolving
   bool public resolved; // Cannot change the resolved status once set
@@ -37,6 +38,7 @@ contract Market is Ownable {
 
     yesToken = new YesToken(initFund);
     noToken = new NoToken(initFund);
+    naToken = new NaToken(initFund);
     ammConstant = initFund;
 
     resolved = false;
@@ -62,10 +64,12 @@ contract Market is Ownable {
     uint amount = msg.value;
     require(amount > 0, "Bet cannot be null");
 
+    // Careful: Computing bet size should be done before the minting.
     uint betSize = outcome ? getYesBetSize(amount) : getNoBetSize(amount);
 
     yesToken.mintToOwner(amount);
     noToken.mintToOwner(amount);
+    naToken.mint(better, amount);
 
     if (outcome) {
       yesToken.transfer(better, betSize);
@@ -114,8 +118,7 @@ contract Market is Ownable {
     } else if (resolvedOutcome == Resolution.NO) {
       noToken.burn(user, reward);
     } else if (resolvedOutcome == Resolution.NA) {
-      // @TODO
-      require(false, "N/A outcome not yet handled");
+      naToken.burn(user, reward);
     }
 
     // @TODO: emit event. Why?
@@ -134,8 +137,7 @@ contract Market is Ownable {
     } else if (resolvedOutcome == Resolution.NO) {
       return noToken.balanceOf(user);
     } else if (resolvedOutcome == Resolution.NA) {
-      // @TODO
-      require(false, "N/A outcome not yet handled");
+      return naToken.balanceOf(user);
     }
     return 0;
   }
@@ -182,13 +184,15 @@ contract Market is Ownable {
     return numerator.div(denominator);
   }
 
-  function tokenBalanceOf(address addr) public view returns (uint yes, uint no) {
+  function tokenBalanceOf(address addr) public view returns (uint yes, uint no, uint na) {
     yes = yesToken.balanceOf(addr);
     no = noToken.balanceOf(addr);
+    na = naToken.balanceOf(addr);
   }
 
-  function totalSupply() external view returns(uint yesTot, uint noTot) {
+  function totalSupply() external view returns(uint yesTot, uint noTot, uint naTot) {
     yesTot = yesToken.totalSupply();
     noTot = noToken.totalSupply();
+    naTot = naToken.totalSupply();
   }
 }

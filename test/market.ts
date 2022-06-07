@@ -63,9 +63,10 @@ describe("Market", () => {
       const market = await Market.deploy("", mockProb, { value: someEth });
 
       await market.deployed();
-      const [yesTot, noTot] = await market.totalSupply();
+      const [yesTot, noTot, naTot] = await market.totalSupply();
       expect(yesTot).to.equal(someEth);
       expect(noTot).to.equal(someEth);
+      expect(naTot).to.equal(someEth);
     });
 
     it("should correctly set the AMM constant", async () => {
@@ -111,6 +112,11 @@ describe("Market", () => {
           expectedTotSupply.sub(yesBetSize),
           expectedTotSupply
         );
+
+      const [, , naTot] = await market.totalSupply();
+      const [, , betterNaBalance] = await market.tokenBalanceOf(better.address);
+      expect(naTot).to.equal(someEth.add(payedForBet));
+      expect(betterNaBalance).to.equal(payedForBet);
     });
 
     it("should have correct balances (contract and better) after NO bet", async () => {
@@ -219,10 +225,10 @@ describe("Market", () => {
       });
       await market.deployed();
 
-      await market.resolve(NoEnum);
-      expect(await market.resolvedOutcome()).to.equal(NoEnum);
+      await market.resolve(NaEnum);
+      expect(await market.resolvedOutcome()).to.equal(NaEnum);
 
-      await expect(market.resolve(NoEnum)).to.be.revertedWith(
+      await expect(market.resolve(NaEnum)).to.be.revertedWith(
         "Market can only be resolved once"
       );
     });

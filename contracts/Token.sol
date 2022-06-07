@@ -35,5 +35,5 @@ contract NoToken is PredictionToken {
 }
 
 contract NaToken is PredictionToken {
-  constructor() PredictionToken("N/A", "NA", 0) {}
+  constructor(uint initFund) PredictionToken("N/A", "NA", initFund) {}
 }
