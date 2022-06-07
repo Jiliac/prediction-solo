@@ -24,16 +24,20 @@ export const Claim = () => {
 
   return (
     <div className="container">
-      <div className="rounded-xl shadow-xl py-6 px-6 betbox">
-        <article className="prose">
-          <h2>You can claim {claimableReward}</h2>
-          <button
-            className="mx-4 btn btn-lg btn-success"
-            onClick={() => claim()}
-          >
-            Claim your Reward
-          </button>
-        </article>
+      <div className="columns-3">
+        <div className="break-after-column"></div>
+        <div className="rounded-xl shadow-xl py-6 px-6 betbox">
+          <article className="prose">
+            <h2>You can claim {claimableReward}</h2>
+            <button
+              className="mx-4 btn btn-lg btn-success"
+              onClick={() => claim()}
+            >
+              Claim your Reward
+            </button>
+          </article>
+        </div>
+        <div className="break-before-column"></div>
       </div>
     </div>
   );
