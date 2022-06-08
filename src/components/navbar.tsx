@@ -1,9 +1,33 @@
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
 
-export const Navbar = () => {
-  const { data: account } = useAccount();
+const ConnectedItems = ({ address }: { address: string | undefined }) => {
   const { disconnect } = useDisconnect();
   const { activeChain } = useNetwork();
+
+  return (
+    <>
+      <li>
+        <a>Account: {address}</a>
+      </li>
+      {activeChain && (
+        <li>
+          <a className="mb-3">Network: {activeChain.name}</a>
+        </li>
+      )}
+      <li>
+        <button
+          className="btn btn-outline btn-primary"
+          onClick={() => disconnect()}
+        >
+          Disconnect
+        </button>
+      </li>
+    </>
+  );
+};
+
+export const Navbar = () => {
+  const { data: account } = useAccount();
 
   return (
     <div className="navbar bg-base-100">
@@ -12,22 +36,7 @@ export const Navbar = () => {
       </div>
       <div className="flex-none">
         <ul className="menu menu-horizontal p-0">
-          <li>
-            <a>Account: {account?.address}</a>
-          </li>
-          {activeChain && (
-            <li>
-              <a className="mb-3">Network: {activeChain.name}</a>
-            </li>
-          )}
-          <li>
-            <button
-              className="btn btn-outline btn-primary"
-              onClick={() => disconnect()}
-            >
-              Disconnect
-            </button>
-          </li>
+          {account && <ConnectedItems address={account?.address} />}
         </ul>
       </div>
     </div>
