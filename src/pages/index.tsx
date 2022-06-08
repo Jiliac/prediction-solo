@@ -3,7 +3,6 @@ import { useAccount } from "wagmi";
 
 import { Connect } from "../components/connect";
 import { ContractInfo } from "../components/contractInfo";
-import { ConnectedInfo } from "../components/connectedInfo";
 import { Betting } from "../components/betting";
 import { Events } from "../components/events";
 import { Resolution, ResolvedStatus } from "../components/resolution";
@@ -18,34 +17,29 @@ const Index: NextPage = () => {
   const resolved = useReadMarket("resolved");
 
   if (!account) return <Connect />;
+  if (!contract) return <h2>No contract. Issue.</h2>;
 
   return (
-    <>
-      <ConnectedInfo />
-
-      {contract && (
-        <div className="container">
-          <div className="columns-2 gap-14">
-            <div className="break-after-column">
-              <ContractInfo contract={contract} />
-            </div>
-            <div className="pt-7">
-              {!resolved && <Betting contract={contract} />}
-              {resolved && <ResolvedStatus />}
-              {isOwner && <Resolution />}
-            </div>
-          </div>
-          {resolved && (
-            <>
-              <div className="divider"></div>
-              <Claim />
-            </>
-          )}
-          <div className="divider"></div>
-          <Events />
+    <div className="container">
+      <div className="columns-2 gap-14">
+        <div className="break-after-column">
+          <ContractInfo />
         </div>
+        <div className="pt-7">
+          {!resolved && <Betting contract={contract} />}
+          {resolved && <ResolvedStatus />}
+          {isOwner && <Resolution />}
+        </div>
+      </div>
+      {resolved && (
+        <>
+          <div className="divider"></div>
+          <Claim />
+        </>
       )}
-    </>
+      <div className="divider"></div>
+      <Events />
+    </div>
   );
 };
 

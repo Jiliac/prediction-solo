@@ -17,7 +17,7 @@ interface Market {
   noTokenTotSupply: string;
 }
 
-export const ContractInfo = ({ contract }: any) => {
+export const ContractInfo = () => {
   const [market, setMarket] = useState<Market | undefined>(undefined);
   const { data: account } = useAccount();
   const { data: balanceData } = useBalance({
@@ -27,8 +27,6 @@ export const ContractInfo = ({ contract }: any) => {
 
   const { name, impliedProb, totalSupply, userBalance } = useMarketInfos();
   useEffect(() => {
-    if (!contract) return;
-
     const f = async () => {
       if (!name || !impliedProb || !totalSupply || !account) {
         setMarket(undefined);
@@ -57,7 +55,7 @@ export const ContractInfo = ({ contract }: any) => {
     };
 
     f();
-  }, [contract, name, impliedProb, account, totalSupply, userBalance]);
+  }, [name, impliedProb, account, totalSupply, userBalance]);
 
   if (!market) <h2>Contract but no market?</h2>;
 
