@@ -9,6 +9,8 @@ import "solidity-coverage";
 
 dotenv.config();
 
+const { API_URL, PRIVATE_KEY } = process.env;
+
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
@@ -32,10 +34,9 @@ const config: HardhatUserConfig = {
       url: "http://localhost:8545",
       chainId: 31337,
     },
-    ropsten: {
-      url: process.env.ROPSTEN_URL || "",
-      accounts:
-        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+    polygon_mumbai: {
+      url: API_URL,
+      accounts: [`0x${PRIVATE_KEY}`],
     },
   },
   gasReporter: {

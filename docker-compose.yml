@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.hardhat
+    env_file:
+      - .env
     ports:
       - 8545:8545
     volumes:
