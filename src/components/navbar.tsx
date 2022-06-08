@@ -11,7 +11,7 @@ const ConnectedItems = ({ address }: { address: string | undefined }) => {
       </li>
       {activeChain && (
         <li>
-          <a className="mb-3">Network: {activeChain.name}</a>
+          <a>Network: {activeChain.name}</a>
         </li>
       )}
       <li>
