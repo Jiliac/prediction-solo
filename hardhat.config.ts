@@ -9,7 +9,7 @@ import "solidity-coverage";
 
 dotenv.config();
 
-const { API_URL, PRIVATE_KEY } = process.env;
+const { MUMBAI_API_URL, PRIVATE_KEY } = process.env;
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -26,6 +26,7 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
 
 const config: HardhatUserConfig = {
   solidity: "0.8.4",
+  defaultNetwork: "localhost",
   networks: {
     hardhat: {
       chainId: 31337,
@@ -35,7 +36,11 @@ const config: HardhatUserConfig = {
       chainId: 31337,
     },
     polygon_mumbai: {
-      url: API_URL,
+      url: MUMBAI_API_URL,
+      accounts: [`0x${PRIVATE_KEY}`],
+    },
+    polygon: {
+      url: POLYGON_API_URL,
       accounts: [`0x${PRIVATE_KEY}`],
     },
   },
