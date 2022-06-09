@@ -1,6 +1,7 @@
 {
   "name": "hardhat-project",
   "scripts": {
+    "compile": "hardhat compile && next build",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
