@@ -4,8 +4,6 @@ import { ethers, BigNumber } from "ethers";
 
 import MarketContract from "artifacts/contracts/Market.sol/Market.json";
 
-const contractAddr = String(process.env.NEXT_PUBLIC_LOCAL_CONTRACT);
-
 interface Event {
   outcome: boolean;
   betterAddr: string;
@@ -38,7 +36,7 @@ const parseEvent = (rawEvent: any): Event => {
   return parsedEvent;
 };
 
-export const Events = () => {
+export const Events = ({ contractAddr }: { contractAddr: string }) => {
   const [events, setEvents] = useState<Array<Event>>([]);
   useContractEvent(
     { addressOrName: contractAddr, contractInterface: MarketContract.abi },

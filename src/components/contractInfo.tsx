@@ -4,8 +4,6 @@ import { useAccount, useBalance } from "wagmi";
 
 import { useMarketInfos } from "../hooks/contract";
 
-const contractAddr = String(process.env.NEXT_PUBLIC_LOCAL_CONTRACT);
-
 interface Market {
   name: string;
   probability: string;
@@ -17,7 +15,7 @@ interface Market {
   noTokenTotSupply: string;
 }
 
-export const ContractInfo = () => {
+export const ContractInfo = ({ contractAddr }: { contractAddr: string }) => {
   const [market, setMarket] = useState<Market | undefined>(undefined);
   const { data: account } = useAccount();
   const { data: balanceData } = useBalance({
@@ -25,7 +23,9 @@ export const ContractInfo = () => {
     watch: true,
   });
 
-  const { name, impliedProb, totalSupply, userBalance } = useMarketInfos();
+  const { name, impliedProb, totalSupply, userBalance } =
+    useMarketInfos(contractAddr);
+
   useEffect(() => {
     const f = async () => {
       if (!name || !impliedProb || !totalSupply || !account) {

@@ -9,7 +9,7 @@ import "solidity-coverage";
 
 dotenv.config();
 
-const { MUMBAI_API_URL, PRIVATE_KEY } = process.env;
+const { MUMBAI_API_URL, POLYGON_API_URL, PRIVATE_KEY } = process.env;
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html

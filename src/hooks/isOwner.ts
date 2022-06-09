@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
 import { useReadMarket } from "./contract";
 
-export const useIsOwner = () => {
+export const useIsOwner = (contractAddr: string) => {
   const { data: account } = useAccount();
   const [isOwner, setIsOwner] = useState<boolean>(false);
-  const owner = useReadMarket("owner");
+  const owner = useReadMarket(contractAddr, "owner");
 
   useEffect(() => {
     setIsOwner(owner === account?.address);

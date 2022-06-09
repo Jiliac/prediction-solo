@@ -1,20 +1,24 @@
 import { useAccount, useContract, useSigner, useContractRead } from "wagmi";
 import MarketContract from "artifacts/contracts/Market.sol/Market.json";
 
-const contractAddr = String(process.env.NEXT_PUBLIC_LOCAL_CONTRACT);
-
-export const useMarketInfos = () => {
+export const useMarketInfos = (contractAddr: string) => {
   const { data: account } = useAccount();
 
   return {
-    name: useReadMarket("name"),
-    impliedProb: useReadMarket("impliedProbability"),
-    totalSupply: useReadMarket("totalSupply"),
-    userBalance: useReadMarket("tokenBalanceOf", [account?.address]),
+    name: useReadMarket(contractAddr, "name"),
+    impliedProb: useReadMarket(contractAddr, "impliedProbability"),
+    totalSupply: useReadMarket(contractAddr, "totalSupply"),
+    userBalance: useReadMarket(contractAddr, "tokenBalanceOf", [
+      account?.address,
+    ]),
   };
 };
 
-export const useReadMarket = (func: string, args?: Array<any>): any => {
+export const useReadMarket = (
+  contractAddr: string,
+  func: string,
+  args?: Array<any>
+): any => {
   const { data: account } = useAccount();
 
   const { data } = useContractRead(
@@ -29,7 +33,7 @@ export const useReadMarket = (func: string, args?: Array<any>): any => {
   return data;
 };
 
-export const useMarketContract = () => {
+export const useMarketContract = (contractAddr: string) => {
   const { data: signerData } = useSigner();
   const contract = useContract({
     addressOrName: contractAddr,

@@ -10,10 +10,10 @@ const roundFormatEther = (ether: BigNumber): string => {
   return rounded.toString();
 };
 
-export const Claim = () => {
+export const Claim = ({ contractAddr }: { contractAddr: string }) => {
   const [claimableReward, setClaim] = useState<string>("");
-  const claimableRewardBN = useReadMarket("getRewardAmount");
-  const claim = useClaim();
+  const claimableRewardBN = useReadMarket(contractAddr, "getRewardAmount");
+  const claim = useClaim(contractAddr);
 
   useEffect(() => {
     if (!claimableRewardBN) return;

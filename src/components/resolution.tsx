@@ -6,8 +6,8 @@ const YesEnum = 0;
 const NoEnum = 1;
 const NaEnum = 2;
 
-export const ResolvedStatus = () => {
-  const resolvedOutcome = useReadMarket("resolvedOutcome");
+export const ResolvedStatus = ({ contractAddr }: { contractAddr: string }) => {
+  const resolvedOutcome = useReadMarket(contractAddr, "resolvedOutcome");
   const [outcome, setOutcome] = useState<string>("");
 
   useEffect(
@@ -24,11 +24,11 @@ export const ResolvedStatus = () => {
   );
 };
 
-export const Resolution = () => {
+export const Resolution = ({ contractAddr }: { contractAddr: string }) => {
   const [resolving, setResolving] = useState<boolean>(false);
   const write = useResolve();
 
-  const resolved = useReadMarket("resolved");
+  const resolved = useReadMarket(contractAddr, "resolved");
   if (resolved) return null;
 
   if (!resolving) {
