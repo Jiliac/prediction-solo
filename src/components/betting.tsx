@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 
-export const Betting = ({ contract }: any) => {
-  const [betSize, setBetSize] = useState<string>("");
+import { useBet } from "../hooks/bet";
 
-  const doBet = async (outcome: boolean) => {
+export const Betting = ({ contractAddr }: { contractAddr: string }) => {
+  const [betSize, setBetSize] = useState<string>("");
+  const writeBet = useBet(contractAddr);
+
+  const doBet = (outcome: boolean) => {
     if (!betSize) return;
 
     const betSizeEth = ethers.utils.parseEther(betSize);
-    await contract.bet(outcome, { value: betSizeEth });
+    writeBet({ args: [outcome], overrides: { value: betSizeEth } });
     setBetSize("");
   };
 

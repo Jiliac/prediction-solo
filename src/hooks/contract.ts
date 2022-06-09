@@ -32,13 +32,3 @@ export const useReadMarket = (
   );
   return data;
 };
-
-export const useMarketContract = (contractAddr: string) => {
-  const { data: signerData } = useSigner();
-  const contract = useContract({
-    addressOrName: contractAddr,
-    contractInterface: MarketContract.abi,
-    signerOrProvider: signerData,
-  });
-  return contract;
-};

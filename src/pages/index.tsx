@@ -9,7 +9,7 @@ import { Resolution, ResolvedStatus } from "../components/resolution";
 import { Claim } from "../components/claim";
 
 import { useIsContractLive, useContractAddr } from "../hooks/contractAddress";
-import { useMarketContract, useReadMarket } from "../hooks/contract";
+import { useReadMarket } from "../hooks/contract";
 import { useIsOwner } from "../hooks/isOwner";
 
 const Index: NextPage = () => {
@@ -31,8 +31,7 @@ const Index: NextPage = () => {
   return <DApp contractAddr={contractAddr} />;
 };
 
-const DApp = ({ contractAddr }: { contractAddr: string }) => {
-  const contract = useMarketContract(contractAddr);
+export const DApp = ({ contractAddr }: { contractAddr: string }) => {
   const isOwner = useIsOwner(contractAddr);
   const resolved = useReadMarket(contractAddr, "resolved");
 
@@ -43,7 +42,7 @@ const DApp = ({ contractAddr }: { contractAddr: string }) => {
           <ContractInfo contractAddr={contractAddr} />
         </div>
         <div className="pt-7">
-          {!resolved && <Betting contract={contract} />}
+          {!resolved && <Betting contractAddr={contractAddr} />}
           {resolved && <ResolvedStatus contractAddr={contractAddr} />}
           {isOwner && <Resolution contractAddr={contractAddr} />}
         </div>
