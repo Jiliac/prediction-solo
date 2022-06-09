@@ -13,8 +13,11 @@ import { useMarketContract, useReadMarket } from "../hooks/contract";
 import { useIsOwner } from "../hooks/isOwner";
 
 const Index: NextPage = () => {
+  const { data: account } = useAccount();
   const contractAddr = useContractAddr();
   const isLive = useIsContractLive(contractAddr);
+
+  if (!account) return <Connect />;
 
   if (!isLive)
     return (
@@ -29,13 +32,9 @@ const Index: NextPage = () => {
 };
 
 const DApp = ({ contractAddr }: { contractAddr: string }) => {
-  const { data: account } = useAccount();
   const contract = useMarketContract(contractAddr);
   const isOwner = useIsOwner(contractAddr);
   const resolved = useReadMarket(contractAddr, "resolved");
-
-  if (!account) return <Connect />;
-  if (!contract) return <h2>No contract. Issue.</h2>;
 
   return (
     <div className="container">

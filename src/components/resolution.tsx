@@ -26,7 +26,7 @@ export const ResolvedStatus = ({ contractAddr }: { contractAddr: string }) => {
 
 export const Resolution = ({ contractAddr }: { contractAddr: string }) => {
   const [resolving, setResolving] = useState<boolean>(false);
-  const write = useResolve();
+  const write = useResolve(contractAddr);
 
   const resolved = useReadMarket(contractAddr, "resolved");
   if (resolved) return null;
