@@ -18,46 +18,47 @@ interface Market {
 export const ContractInfo = ({ contractAddr }: { contractAddr: string }) => {
   const [market, setMarket] = useState<Market | undefined>(undefined);
   const { data: account } = useAccount();
-  const { data: balanceData } = useBalance({
-    addressOrName: contractAddr,
-    watch: true,
-  });
 
   const { name, impliedProb, totalSupply, userBalance } =
     useMarketInfos(contractAddr);
 
   useEffect(() => {
-    const f = async () => {
-      if (!name || !impliedProb || !totalSupply || !account) {
-        setMarket(undefined);
-        return;
-      }
+    if (!name || !impliedProb || !totalSupply || !account) {
+      setMarket(undefined);
+      return;
+    }
 
-      try {
-        const [yesTot, noTot] = totalSupply;
+    try {
+      const [yesTot, noTot] = totalSupply;
 
-        const [userYes, userNo] = userBalance;
+      const [userYes, userNo] = userBalance;
 
-        const market: Market = {
-          name: name,
-          probability: ethers.utils.formatEther(impliedProb),
-          userYesBet: ethers.utils.formatEther(userYes),
-          userNoBet: ethers.utils.formatEther(userNo),
-          yesTokenTotSupply: ethers.utils.formatEther(yesTot),
-          noTokenTotSupply: ethers.utils.formatEther(noTot),
-        };
+      const market: Market = {
+        name: name,
+        probability: ethers.utils.formatEther(impliedProb),
+        userYesBet: ethers.utils.formatEther(userYes),
+        userNoBet: ethers.utils.formatEther(userNo),
+        yesTokenTotSupply: ethers.utils.formatEther(yesTot),
+        noTokenTotSupply: ethers.utils.formatEther(noTot),
+      };
 
-        setMarket(market);
-      } catch (e) {
-        setMarket(undefined);
-        console.log("Error setting market:", e);
-      }
-    };
-
-    f();
+      setMarket(market);
+    } catch (e) {
+      setMarket(undefined);
+      console.log("Error setting market:", e);
+    }
   }, [name, impliedProb, account, totalSupply, userBalance]);
 
   if (!market) <h2>Contract but no market?</h2>;
+
+  return <TableInfo contractAddr={contractAddr} market={market} />;
+};
+
+const TableInfo = ({ contractAddr, market }: any) => {
+  const { data: balanceData } = useBalance({
+    addressOrName: contractAddr,
+    watch: true,
+  });
 
   return (
     <article className="prose">
