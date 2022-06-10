@@ -15,7 +15,18 @@ interface Market {
   noTokenTotSupply: string;
 }
 
-export const ContractInfo = ({ contractAddr }: { contractAddr: string }) => {
+interface InfoProps {
+  contractAddr: string;
+  market: Market | undefined;
+}
+
+export const ContractInfo = ({
+  contractAddr,
+  old,
+}: {
+  contractAddr: string;
+  old?: boolean;
+}) => {
   const [market, setMarket] = useState<Market | undefined>(undefined);
   const { data: account } = useAccount();
 
@@ -51,10 +62,53 @@ export const ContractInfo = ({ contractAddr }: { contractAddr: string }) => {
 
   if (!market) <h2>Contract but no market?</h2>;
 
-  return <TableInfo contractAddr={contractAddr} market={market} />;
+  if (old) return <TableInfo contractAddr={contractAddr} market={market} />;
+  return <SimpleInfo contractAddr={contractAddr} market={market} />;
 };
 
-const TableInfo = ({ contractAddr, market }: any) => {
+const Stat = ({ title, value }: { title: string; value: string }) => {
+  return (
+    <div className="stats shadow my-1">
+      <div className="stat">
+        <div className="stat-title">{title}</div>
+        <div className="stat-value">{value}</div>
+      </div>
+    </div>
+  );
+};
+
+const SimpleInfo = ({ contractAddr, market }: InfoProps) => {
+  const { data: balanceData } = useBalance({
+    addressOrName: contractAddr,
+    watch: true,
+  });
+
+  const formatProb = (probStr: string): string => {
+    const prob = Math.round(Number(probStr) * 100);
+    return prob.toString() + " %";
+  };
+
+  return (
+    <>
+      <article className="prose">
+        <h1>{market?.name}</h1>
+      </article>
+      <div className="columns-2 gap-14 my-10">
+        <div>
+          <Stat
+            title="Volume on this market"
+            value={`${balanceData?.formatted} ${balanceData?.symbol}`}
+          />
+        </div>
+        <div>
+          <Stat title="Chance" value={formatProb(market?.probability)} />
+        </div>
+      </div>
+    </>
+  );
+};
+
+const TableInfo = ({ contractAddr, market }: InfoProps) => {
   const { data: balanceData } = useBalance({
     addressOrName: contractAddr,
     watch: true,
