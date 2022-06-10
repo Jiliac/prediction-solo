@@ -83,7 +83,7 @@ const SimpleInfo = ({ contractAddr, market }: InfoProps) => {
     watch: true,
   });
 
-  const formatProb = (probStr: string): string => {
+  const formatProb = (probStr: string | undefined): string => {
     const prob = Math.round(Number(probStr) * 100);
     return prob.toString() + " %";
   };
