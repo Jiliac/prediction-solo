@@ -18,19 +18,21 @@ export const Betting = ({ contractAddr }: { contractAddr: string }) => {
   return (
     <div className="rounded-xl shadow-xl py-6 px-6 betbox">
       <div className="form-control mb-6">
-        <label className="label mb-2">
-          <span className="label-text">Amount:</span>
-        </label>
-        <label className="input-group">
-          <input
-            type="text"
-            className="input input-bordered"
-            placeholder="0.01"
-            value={betSize}
-            onChange={(e) => setBetSize(e.target.value)}
-          />
-          <span>Matic</span>
-        </label>
+        <div className="mx-auto">
+          <label className="label mb-2">
+            <span className="label-text">Amount:</span>
+          </label>
+          <label className="input-group">
+            <input
+              type="text"
+              className="input input-bordered"
+              placeholder="0.01"
+              value={betSize}
+              onChange={(e) => setBetSize(e.target.value)}
+            />
+            <span>Matic</span>
+          </label>
+        </div>
       </div>
 
       <button

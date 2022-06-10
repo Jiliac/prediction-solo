@@ -87,18 +87,28 @@ const SimpleInfo = ({ contractAddr, market }: InfoProps) => {
     const prob = Math.round(Number(probStr) * 100);
     return prob.toString() + " %";
   };
+  const formatBet = (probStr: string | undefined): string => {
+    const prob = Math.round(Number(probStr) * 10) / 10;
+    return prob.toString();
+  };
 
   return (
     <>
-      <article className="prose">
+      <article className="prose mx-auto">
         <h1>{market?.name}</h1>
       </article>
-      <div className="columns-2 gap-14 my-10">
+      <div className="columns-4 gap-1 my-10">
         <div>
           <Stat
             title="Volume on this market"
             value={`${balanceData?.formatted} ${balanceData?.symbol}`}
           />
+        </div>
+        <div>
+          <Stat title="Your YES bet" value={formatBet(market?.userYesBet)} />
+        </div>
+        <div>
+          <Stat title="Your NO bet" value={formatBet(market?.userNoBet)} />
         </div>
         <div>
           <Stat title="Chance" value={formatProb(market?.probability)} />
