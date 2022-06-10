@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useAccount } from "wagmi";
-import { useReadMarket } from "./contract";
+import { useReadMarket } from "./contractRead";
 
 export const useIsOwner = (contractAddr: string) => {
   const { data: account } = useAccount();

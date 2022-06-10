@@ -1,4 +1,4 @@
-import { useAccount, useContract, useSigner, useContractRead } from "wagmi";
+import { useAccount, useContractRead } from "wagmi";
 import MarketContract from "artifacts/contracts/Market.sol/Market.json";
 
 export const useMarketInfos = (contractAddr: string) => {

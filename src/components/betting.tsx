@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ethers } from "ethers";
 
-import { useBet } from "../hooks/bet";
+import { useBet } from "../hooks";
 
 export const Betting = ({ contractAddr }: { contractAddr: string }) => {
   const [betSize, setBetSize] = useState<string>("");

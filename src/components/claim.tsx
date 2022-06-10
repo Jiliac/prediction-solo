@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { utils, BigNumber } from "ethers";
 
-import { useReadMarket } from "../hooks/contract";
-import { useClaim } from "../hooks/claimReward";
+import { useReadMarket, useClaim } from "../hooks";
 
 const roundFormatEther = (ether: BigNumber): string => {
   const res = utils.formatEther(ether);

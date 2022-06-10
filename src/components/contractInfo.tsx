@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { useAccount, useBalance } from "wagmi";
 
-import { useMarketInfos } from "../hooks/contract";
+import { useMarketInfos } from "../hooks";
 
 interface Market {
   name: string;

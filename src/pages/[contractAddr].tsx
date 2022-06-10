@@ -2,9 +2,8 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useAccount } from "wagmi";
 
-import { Connect } from "../components/connect";
-import { DApp } from "./index";
-import { useIsContractLive } from "../hooks/contractAddress";
+import { Connect, DAppV1 } from "../components";
+import { useIsContractLive } from "../hooks";
 
 const ContractPage: NextPage = () => {
   const { data: account } = useAccount();
@@ -23,7 +22,7 @@ const ContractPage: NextPage = () => {
       </div>
     );
 
-  return <DApp contractAddr={contractAddr} />;
+  return <DAppV1 contractAddr={contractAddr} />;
 };
 
 export default ContractPage;

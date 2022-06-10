@@ -3,8 +3,8 @@ import Head from "next/head";
 import { useState, useEffect } from "react";
 import { WagmiConfig } from "wagmi";
 
-import { Navbar } from "../components/navbar";
-import { useClient } from "../hooks/providers";
+import { Navbar } from "../components";
+import { useClient } from "../hooks";
 import "../styles/globals.css";
 
 function MyApp({ Component, pageProps }: AppProps) {
