@@ -13,17 +13,21 @@ async function main() {
   // manually to make sure everything is compiled
   // await hre.run('compile');
 
+  const arg1 = "Will G.R.R. Martin publish an ASOIAF book in 2022?";
+  const arg2 = ethers.utils.parseEther("0.3");
+
   const Market = await ethers.getContractFactory("Market");
-  const market = await Market.deploy(
-    "Will G.R.R. Martin publish an ASOIAF book in 2022?",
-    ethers.utils.parseEther("0.3"),
-    {
-      value: ethers.utils.parseEther("1.9"),
-    }
-  );
+  const market = await Market.deploy(arg1, arg2, {
+    value: ethers.utils.parseEther("20"),
+  });
 
   await market.deployed();
   console.log("Market deployed to:", market.address);
+
+  // await run("verify:verify", {
+  //   address: market.address,
+  //   constructorArguments: [arg1, arg2],
+  // });
 }
 
 main().catch((error) => {

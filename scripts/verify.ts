@@ -2,7 +2,7 @@ import { ethers, run } from "hardhat";
 
 async function main() {
   await run("verify:verify", {
-    address: "0x79144EEe6483953a0E97Ca21e6baC3A2b1015FBD",
+    address: "0xA7FcD00A9295396F444851AF479262ba0398fb86",
     constructorArguments: [
       "Will G.R.R. Martin publish an ASOIAF book in 2022?",
       ethers.utils.parseEther("0.3"),

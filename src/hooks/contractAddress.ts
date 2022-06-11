@@ -45,6 +45,10 @@ export const useContractAddr = () => {
         setContractAddr(String(process.env.NEXT_PUBLIC_MUMBAI_CONTRACT));
         break;
 
+      case 137:
+        setContractAddr(String(process.env.NEXT_PUBLIC_POLYGON_CONTRACT));
+        break;
+
       default:
         setContractAddr("");
     }
