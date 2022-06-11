@@ -9,7 +9,8 @@ import "solidity-coverage";
 
 dotenv.config();
 
-const { MUMBAI_API_URL, POLYGON_API_URL, PRIVATE_KEY } = process.env;
+const { MUMBAI_API_URL, POLYGON_API_URL, POLYGONSCAN_API_KEY, PRIVATE_KEY } =
+  process.env;
 
 // This is a sample Hardhat task. To learn how to create your own go to
 // https://hardhat.org/guides/create-task.html
@@ -49,7 +50,7 @@ const config: HardhatUserConfig = {
     currency: "USD",
   },
   etherscan: {
-    apiKey: process.env.ETHERSCAN_API_KEY,
+    apiKey: POLYGONSCAN_API_KEY,
   },
   paths: {
     artifacts: "artifacts",
