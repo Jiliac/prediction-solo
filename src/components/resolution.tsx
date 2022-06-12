@@ -17,7 +17,7 @@ export const ResolvedStatus = ({ contractAddr }: { contractAddr: string }) => {
   return (
     <div className="rounded-xl shadow-xl py-6 px-6 betbox mt-10">
       <article className="prose my-3">
-        <h2>Market is already resolved to {outcome}.</h2>
+        <h2>Market has been resolved to {outcome}.</h2>
       </article>
     </div>
   );

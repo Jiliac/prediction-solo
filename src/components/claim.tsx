@@ -22,22 +22,18 @@ export const Claim = ({ contractAddr }: { contractAddr: string }) => {
   if (!claimableReward) return null;
 
   return (
-    <div className="container">
-      <div className="columns-3">
-        <div className="break-after-column"></div>
-        <div className="rounded-xl shadow-xl py-6 px-6 betbox">
-          <article className="prose">
-            <h2>You can claim {claimableReward}</h2>
-            <button
-              className="mx-4 btn btn-lg btn-success"
-              onClick={() => claim()}
-            >
-              Claim your Reward
-            </button>
-          </article>
-        </div>
-        <div className="break-before-column"></div>
-      </div>
+    <div className="rounded-xl shadow-xl py-6 px-6 mt-9 betbox">
+      <article className="prose">
+        <h2>You can claim {claimableReward}</h2>
+        {Number(claimableReward) > 0 && (
+          <button
+            className="mx-4 btn btn-lg btn-success"
+            onClick={() => claim()}
+          >
+            Claim your Reward
+          </button>
+        )}
+      </article>
     </div>
   );
 };

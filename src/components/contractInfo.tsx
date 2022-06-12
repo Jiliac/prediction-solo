@@ -66,12 +66,22 @@ export const ContractInfo = ({
   return <SimpleInfo contractAddr={contractAddr} market={market} />;
 };
 
-const Stat = ({ title, value }: { title: string; value: string }) => {
+const Stat = ({
+  title,
+  value,
+  color,
+}: {
+  title: string;
+  value: string;
+  color?: string;
+}) => {
+  const valueColor = color ? `text-${color}-500` : "";
+
   return (
     <div className="stats shadow my-1">
       <div className="stat">
         <div className="stat-title">{title}</div>
-        <div className="stat-value">{value}</div>
+        <div className={`stat-value ${valueColor}`}>{value}</div>
       </div>
     </div>
   );
@@ -91,25 +101,48 @@ const SimpleInfo = ({ contractAddr, market }: InfoProps) => {
     const prob = Math.round(Number(probStr) * 10) / 10;
     return prob.toString();
   };
+  const getColumnN = (market: Market | undefined): string => {
+    let columnN = 2;
+    if (Number(market?.userNoBet) > 0) columnN += 1;
+    if (Number(market?.userYesBet) > 0) columnN += 1;
+    return columnN.toString();
+  };
 
   return (
     <>
       <article className="prose mx-auto">
         <h1>{market?.name}</h1>
       </article>
-      <div className="columns-4 gap-1 my-10">
+      <div className={`columns-${getColumnN(market)} gap-1 my-10`}>
         <div>
           <Stat
             title="Volume on this market"
-            value={`${balanceData?.formatted} ${balanceData?.symbol}`}
+            value={`${formatBet(balanceData?.formatted)} ${
+              balanceData?.symbol
+            }`}
           />
         </div>
-        <div>
-          <Stat title="Your YES bet" value={formatBet(market?.userYesBet)} />
-        </div>
-        <div>
-          <Stat title="Your NO bet" value={formatBet(market?.userNoBet)} />
-        </div>
+
+        {market?.userYesBet && Number(market?.userYesBet) > 0 && (
+          <div>
+            <Stat
+              title="Your YES bet"
+              value={formatBet(market?.userYesBet)}
+              color="green"
+            />
+          </div>
+        )}
+
+        {market?.userNoBet && Number(market?.userNoBet) > 0 && (
+          <div>
+            <Stat
+              title="Your NO bet"
+              value={formatBet(market?.userNoBet)}
+              color="red"
+            />
+          </div>
+        )}
+
         <div>
           <Stat title="Chance" value={formatProb(market?.probability)} />
         </div>
