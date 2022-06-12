@@ -360,4 +360,25 @@ describe("Market", () => {
       expect(postClaimNoBalance).to.be.closeTo(zeroEth, 20);
     });
   });
+
+  describe("Ownership", () => {
+    it("Should not be able to renounce ownership", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy("", mockProb, { value: someEth });
+      await market.deployed();
+
+      await expect(market.renounceOwnership()).to.be.revertedWith("disabled");
+    });
+
+    it("Should not be able to transfer ownership", async () => {
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy("", mockProb, { value: someEth });
+      await market.deployed();
+
+      const [, better] = await ethers.getSigners();
+      await expect(market.transferOwnership(better.address)).to.be.revertedWith(
+        "disabled"
+      );
+    });
+  });
 });

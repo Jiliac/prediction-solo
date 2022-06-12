@@ -195,4 +195,13 @@ contract Market is Ownable {
     noTot = noToken.totalSupply();
     naTot = naToken.totalSupply();
   }
+
+  // ****************************
+  // **** Disabled inherited ****
+  function renounceOwnership() public virtual override onlyOwner {
+    require(false, "disabled");
+  }
+  function transferOwnership(address) public virtual override onlyOwner {
+    require(false, "disabled");
+  }
 }
