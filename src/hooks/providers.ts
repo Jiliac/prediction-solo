@@ -6,7 +6,8 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { jsonRpcProvider } from "wagmi/providers/jsonRpc";
 
-const alchemyId = process.env.NEXT_PUBLIC_ALCHEMY_ID;
+const alchemyId1 = process.env.NEXT_PUBLIC_ALCHEMY_ID1;
+const alchemyId2 = process.env.NEXT_PUBLIC_ALCHEMY_ID2;
 const defaultChain = chain.polygon;
 
 // Set up connectors
@@ -17,7 +18,8 @@ export const useClient = () => {
     const { provider, chains } = configureChains(
       [chain.hardhat, chain.localhost, chain.polygonMumbai, chain.polygon],
       [
-        alchemyProvider({ alchemyId }),
+        alchemyProvider({ alchemyId: alchemyId1 }),
+        alchemyProvider({ alchemyId: alchemyId2 }),
         jsonRpcProvider({
           rpc: (chain) => {
             if (chain.id !== 31337 && chain.id !== 1337) return null;
@@ -31,8 +33,8 @@ export const useClient = () => {
       autoConnect: true,
       provider,
       connectors({ chainId }) {
-        console.log("Chain ID:", chainId);
         const chain = chains.find((x) => x.id === chainId) ?? defaultChain;
+        const alchemyId = chainId === 137 ? alchemyId2 : alchemyId1;
         const rpcUrl = chain.rpcUrls.alchemy
           ? `${chain.rpcUrls.alchemy}/${alchemyId}`
           : chain.rpcUrls.default;
