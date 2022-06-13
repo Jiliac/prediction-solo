@@ -14,7 +14,7 @@ async function main() {
   // await hre.run('compile');
 
   const arg1 = "Will G.R.R. Martin publish an ASOIAF book in 2022?";
-  const arg2 = ethers.utils.parseEther("0.3");
+  const arg2 = ethers.utils.parseEther("0.2");
 
   const Market = await ethers.getContractFactory("Market");
   const market = await Market.deploy(arg1, arg2, {
