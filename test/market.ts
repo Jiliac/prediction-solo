@@ -198,7 +198,7 @@ describe("Market", () => {
       await market.deployed();
 
       expect(await market.resolved()).to.equal(false);
-      await market.resolve(YesEnum);
+      await expect(market.resolve(YesEnum)).to.emit(market, "Resolved");
       expect(await market.resolved()).to.equal(true);
       expect(await market.resolvedOutcome()).to.equal(YesEnum);
     });
@@ -297,6 +297,22 @@ describe("Market", () => {
       const expectedBalance = preResolutionBalance.add(ownerExpectedReward);
       const realBalance = await ethers.provider.getBalance(owner.address);
       expect(realBalance).to.closeTo(expectedBalance, 1e14);
+    });
+
+    it("should emit a Claim event when user claims his reward", async () => {
+      const [, better] = await ethers.getSigners();
+      const Market = await ethers.getContractFactory("Market");
+      const market = await Market.deploy("", mockProb, { value: someEth });
+      await market.deployed();
+
+      const payedForBet = ethers.utils.parseEther("0.9");
+      const noBetSize = await market.getNoBetSize(payedForBet);
+      await market.connect(better).bet(false, { value: payedForBet });
+      await market.resolve(NoEnum);
+
+      await expect(market.connect(better).claimReward())
+        .to.emit(market, "ClaimMade")
+        .withArgs(better.address, noBetSize);
     });
 
     it("should pay user after claimed reward", async () => {

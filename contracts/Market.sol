@@ -89,6 +89,8 @@ contract Market is Ownable {
         );
   }
 
+  event Resolved();
+
   function resolve(Resolution outcome) external onlyOwner {
     require(resolved == false, "Market can only be resolved once");
     require(yesToken.totalSupply() == noToken.totalSupply(), "Incoherent market");
@@ -98,8 +100,10 @@ contract Market is Ownable {
     uint ownerFunds = doGetRewardAmount(address(this));
     payable(owner()).transfer(ownerFunds);
 
-    // @TODO: emit event. Why?
+    emit Resolved();
   }
+
+  event ClaimMade(address better, uint reward);
 
   function claimReward() external {
     require(resolved == true, "Market is not resolved yet");
@@ -121,7 +125,7 @@ contract Market is Ownable {
       naToken.burn(user, reward);
     }
 
-    // @TODO: emit event. Why?
+    emit ClaimMade(user, reward);
   }
 
   // ******************************
