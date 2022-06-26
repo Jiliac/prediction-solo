@@ -1,14 +1,15 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 
-describe("TransferableMarket", () => {
+describe("TransferableMartet", () => {
+  const mockName = "First market name";
   const mockProb = ethers.utils.parseEther("0.3");
   const someEth = ethers.utils.parseEther("1.2");
 
   it("Owner should be the one set by the constructor", async () => {
     const Market = await ethers.getContractFactory("TransferableMarket");
     const [caller, origin] = await ethers.getSigners();
-    const market = await Market.deploy(mockProb, origin.address, {
+    const market = await Market.deploy(mockName, mockProb, origin.address, {
       value: someEth,
     });
 
@@ -19,9 +20,14 @@ describe("TransferableMarket", () => {
 
   it("Transfer should be disabled post-deployment", async () => {
     const Market = await ethers.getContractFactory("TransferableMarket");
-    const market = await Market.deploy(mockProb, ethers.constants.AddressZero, {
-      value: someEth,
-    });
+    const market = await Market.deploy(
+      mockName,
+      mockProb,
+      ethers.constants.AddressZero,
+      {
+        value: someEth,
+      }
+    );
 
     await market.deployed();
     const [caller] = await ethers.getSigners();
