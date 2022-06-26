@@ -10,10 +10,10 @@ contract MarketFactory {
     uint amount
   ); 
 
-  function createMarket(uint probability) external payable {
+  function createMarket(string memory name, uint probability) external payable {
     address owner = msg.sender;
     TransferableMarket market =
-      new TransferableMarket{value: msg.value}(probability, owner);
+      new TransferableMarket{value: msg.value}(name, probability, owner);
 
     emit NewMarket(address(market), owner, probability, msg.value);
   }
