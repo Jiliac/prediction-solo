@@ -6,11 +6,7 @@ contract TransferableMarket is Market {
   // Allow ownership transfer during initialization.
   bool initializing;
 
-  constructor(
-      string memory _name,
-      uint probability,
-      address owner
-  ) payable Market(_name, probability) {
+  constructor( uint probability, address owner) payable Market(probability) {
     initializing = true;
     if (owner != address(0) && owner != msg.sender) {
       transferOwnership(owner);

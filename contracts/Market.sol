@@ -11,8 +11,6 @@ contract Market is Ownable {
 
   uint public constant maxProb = 1e18;
 
-  string public name;
-
   // AMM variables:
   uint public initProbability;
   uint public ammConstant;
@@ -27,13 +25,12 @@ contract Market is Ownable {
   enum Resolution{YES, NO, NA}
   Resolution public resolvedOutcome;
 
-  constructor(string memory _name, uint probability) payable {
+  constructor(uint probability) payable {
     uint initFund = msg.value;
     require(probability > 0, "Need a strictly positive initial probability");
     require(probability < maxProb, "Probability between 0 and 1 strictly. 18 decimals.");
     require(initFund > 1e18, "Need enough liquidity to be initialized");
 
-    name = _name;
     initProbability = probability;
 
     yesToken = new YesToken(initFund);
