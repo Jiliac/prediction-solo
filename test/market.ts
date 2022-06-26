@@ -2,7 +2,6 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("Market", () => {
-  const mockName = "First market name";
   const mockProb = ethers.utils.parseEther("0.3");
   const someEth = ethers.utils.parseEther("1.2");
   const zeroEth = ethers.utils.parseEther("0");
@@ -10,20 +9,19 @@ describe("Market", () => {
   describe("initialization", () => {
     it("should do correctly set the address and name", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
       const [owner] = await ethers.getSigners();
 
       await market.deployed();
-      expect(await market.name()).to.equal(mockName);
       expect(await market.owner()).to.equal(owner.address);
       expect(await market.impliedProbability()).to.equal(mockProb);
     });
 
     it("should have the initialized balance", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
 
       await market.deployed();
       expect(await market.initProbability()).to.equal(mockProb);
@@ -34,7 +32,7 @@ describe("Market", () => {
 
     it("should fail if the probably is too low", async () => {
       const Market = await ethers.getContractFactory("Market");
-      await expect(Market.deploy(mockName, 0)).to.be.revertedWith(
+      await expect(Market.deploy(0)).to.be.revertedWith(
         "Need a strictly positive initial probability"
       );
     });
@@ -42,7 +40,7 @@ describe("Market", () => {
     it("should fail if the probably is too high", async () => {
       const overMaxProb = ethers.utils.parseEther("1.2");
       const Market = await ethers.getContractFactory("Market");
-      await expect(Market.deploy(mockName, overMaxProb)).to.be.revertedWith(
+      await expect(Market.deploy(overMaxProb)).to.be.revertedWith(
         "Probability between 0 and 1 strictly. 18 decimals."
       );
     });
@@ -52,7 +50,7 @@ describe("Market", () => {
       const Market = await ethers.getContractFactory("Market");
 
       await expect(
-        Market.deploy("", mockProb, { value: lowEth })
+        Market.deploy(mockProb, { value: lowEth })
       ).to.be.revertedWith("Need enough liquidity to be initialized");
     });
   });
@@ -60,7 +58,7 @@ describe("Market", () => {
   describe("betting", () => {
     it("should mint YES and NO tokens", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
 
       await market.deployed();
       const [yesTot, noTot, naTot] = await market.totalSupply();
@@ -71,7 +69,7 @@ describe("Market", () => {
 
     it("should correctly set the AMM constant", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
 
       await market.deployed();
       const k = await market.ammConstant();
@@ -80,7 +78,7 @@ describe("Market", () => {
 
     it("should compute the correct bet size", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
 
       const payedForBet = ethers.utils.parseEther("0.1");
       const betSize = await market.getYesBetSize(payedForBet);
@@ -93,7 +91,7 @@ describe("Market", () => {
     it("should have correct balances (contract and better) after YES bet", async () => {
       const [, better] = await ethers.getSigners();
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       const payedForBet = ethers.utils.parseEther("0.1");
@@ -122,7 +120,7 @@ describe("Market", () => {
     it("should have correct balances (contract and better) after NO bet", async () => {
       const [, better] = await ethers.getSigners();
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       const payedForBet = ethers.utils.parseEther("0.1");
@@ -146,7 +144,7 @@ describe("Market", () => {
     it("should have correct balances (contract and better) after 2 NO bet", async () => {
       const [, better] = await ethers.getSigners();
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       const payedForBet = ethers.utils.parseEther("0.1");
@@ -192,7 +190,7 @@ describe("Market", () => {
 
     it("should set resolved to true once resolved", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
       await market.deployed();
@@ -205,7 +203,7 @@ describe("Market", () => {
 
     it("should not be able to call market solution twice", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
       await market.deployed();
@@ -220,7 +218,7 @@ describe("Market", () => {
 
     it("should not be able to bet after market resolution", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
       await market.deployed();
@@ -235,7 +233,7 @@ describe("Market", () => {
 
     it("should not be able to claim reward on unresolved market", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
       await market.deployed();
@@ -247,7 +245,7 @@ describe("Market", () => {
 
     it("should send fund to owner after resolution", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
 
@@ -270,7 +268,7 @@ describe("Market", () => {
 
     it("should still have bet on balance after resolution", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy(mockName, mockProb, {
+      const market = await Market.deploy(mockProb, {
         value: someEth,
       });
 
@@ -302,7 +300,7 @@ describe("Market", () => {
     it("should emit a Claim event when user claims his reward", async () => {
       const [, better] = await ethers.getSigners();
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       const payedForBet = ethers.utils.parseEther("0.9");
@@ -318,7 +316,7 @@ describe("Market", () => {
     it("should pay user after claimed reward", async () => {
       const [, better] = await ethers.getSigners();
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       const payedForBet = ethers.utils.parseEther("0.9");
@@ -356,7 +354,7 @@ describe("Market", () => {
     it("Should burn token after reward claim", async () => {
       const [, better] = await ethers.getSigners();
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       // Bet and resolve
@@ -380,7 +378,7 @@ describe("Market", () => {
   describe("Ownership", () => {
     it("Should not be able to renounce ownership", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       await expect(market.renounceOwnership()).to.be.revertedWith("disabled");
@@ -388,7 +386,7 @@ describe("Market", () => {
 
     it("Should not be able to transfer ownership", async () => {
       const Market = await ethers.getContractFactory("Market");
-      const market = await Market.deploy("", mockProb, { value: someEth });
+      const market = await Market.deploy(mockProb, { value: someEth });
       await market.deployed();
 
       const [, better] = await ethers.getSigners();
