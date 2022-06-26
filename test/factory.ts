@@ -2,6 +2,7 @@ import { expect } from "chai";
 import { ethers } from "hardhat";
 
 describe("MarketFactory", () => {
+  const mockName = "What the solution to the universe?";
   const mockProb = ethers.utils.parseEther("0.3");
   const someEth = ethers.utils.parseEther("1.2");
 
@@ -10,7 +11,9 @@ describe("MarketFactory", () => {
     const factory = await Factory.deploy();
 
     const [owner] = await ethers.getSigners();
-    const tx = await factory.createMarket(mockProb, { value: someEth });
+    const tx = await factory.createMarket(mockName, mockProb, {
+      value: someEth,
+    });
 
     const events = (await tx.wait())?.events;
     expect(events?.length).to.be.above(1);
