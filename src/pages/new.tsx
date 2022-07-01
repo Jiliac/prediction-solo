@@ -1,8 +1,8 @@
 import { NextPage } from "next";
 import { useAccount } from "wagmi";
 
-import { NotLive, Connect } from "../components";
-import { useContractAddr, useIsFactoryLive } from "../hooks/contractAddress";
+import { NotLive, Connect, NewMarketForm } from "src/components";
+import { useContractAddr, useIsFactoryLive } from "src/hooks/contractAddress";
 
 const NewMarket: NextPage = () => {
   const { data: account } = useAccount();
@@ -13,9 +13,15 @@ const NewMarket: NextPage = () => {
   if (!isLive) return <NotLive />;
 
   return (
-    <article className="prose">
-      <h1>Make a new Market</h1>
-    </article>
+    <div className="w-screen">
+      <div className="max-w-xl m-auto">
+        <article className="prose">
+          <h1>Make a new Market</h1>
+        </article>
+
+        <NewMarketForm />
+      </div>
+    </div>
   );
 };
 

@@ -5,4 +5,5 @@ export * from "./contractInfo";
 export * from "./dappV1";
 export * from "./events";
 export * from "./navbar";
+export * from "./newMarketForm";
 export * from "./resolution";
