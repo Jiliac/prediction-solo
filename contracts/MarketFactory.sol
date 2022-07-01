@@ -17,4 +17,16 @@ contract MarketFactory {
 
     emit NewMarket(address(market), owner, probability, msg.value);
   }
+
+  function createMarketAndSend(
+    string memory name,
+    uint probability,
+    address owner
+  ) external payable {
+    TransferableMarket market =
+      new TransferableMarket{value: msg.value}(name, probability, owner);
+    emit NewMarket(address(market), owner, probability, msg.value);
+  }
+
+  function isDeployed() pure external returns(bool) { return true; } 
 }

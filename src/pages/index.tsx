@@ -10,7 +10,6 @@ const Index: NextPage = () => {
   const isLive = useIsContractLive(contractAddr);
 
   if (!account) return <Connect />;
-
   if (!isLive) return <NotLive />;
 
   return <DApp contractAddr={contractAddr} />;

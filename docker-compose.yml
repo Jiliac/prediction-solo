@@ -22,4 +22,5 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - ./artifacts:/app/artifacts:z
       - ./src:/app/src:z
