@@ -16,10 +16,10 @@ const NewMarket: NextPage = () => {
     <div className="w-screen">
       <div className="max-w-xl m-auto">
         <article className="prose">
-          <h1>Make a new Market</h1>
+          <h1>Make a New Market</h1>
         </article>
 
-        <NewMarketForm />
+        <NewMarketForm contractAddr={contractAddr} />
       </div>
     </div>
   );

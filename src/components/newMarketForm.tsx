@@ -1,4 +1,9 @@
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useContractWrite } from "wagmi";
+import { ethers } from "ethers";
+
+import FactoryContract from "artifacts/contracts/MarketFactory.sol/MarketFactory.json";
 
 interface NewMarketData {
   name: string;
@@ -14,7 +19,7 @@ const Label = ({ name }: { name: string }) => {
   );
 };
 
-const ErrorsDisplay = ({ errors }) => {
+const ErrorsDisplay = ({ errors }: any) => {
   const missingProps: Array<string> = [];
   if (errors.name) missingProps.push("question");
   if (errors.probability) missingProps.push("probability");
@@ -26,29 +31,81 @@ const ErrorsDisplay = ({ errors }) => {
     <div className="alert alert-error shadow-lg">
       <div>
         <span>
-          Missing <span className="italic">{missingProps.join(", ")}</span>{" "}
-          filled.
+          Invalid fields:{" "}
+          <span className="italic">{missingProps.join(", ")}</span>.
         </span>
       </div>
     </div>
   );
 };
 
-export const NewMarketForm = () => {
+const ProbabilityInput = ({ register, prob }: any) => {
+  const [probability, setProbability] = useState<string>("");
+  useEffect(() => setProbability(prob), [prob]);
+
+  return (
+    <div className="flex flex-row gap-10">
+      <label className="input-group basis-1/4">
+        <input
+          type="text"
+          className="input input-bordered w-16"
+          placeholder="42"
+          value={probability}
+          {...register("probability", {
+            required: true,
+            pattern: /[+-]?([0-9]*[.])?[0-9]+/,
+          })}
+        />
+        <span>%</span>
+      </label>
+
+      <input
+        type="range"
+        min="0"
+        max="100"
+        className="range range-primary basis-3/4 my-auto"
+        value={probability}
+        onChange={(e) => setProbability(e.target.value)}
+      />
+    </div>
+  );
+};
+
+const makeOnSubmit = (contractAddr: string) => {
+  const { write } = useContractWrite(
+    {
+      addressOrName: contractAddr,
+      contractInterface: FactoryContract.abi,
+    },
+    "createMarket"
+  );
+
+  const onSubmit: SubmitHandler<NewMarketData> = (data: NewMarketData) => {
+    console.log(data);
+    const liquidityEth = ethers.utils.parseEther(data.liquidity);
+    const probabilityEth = ethers.utils.parseEther(data.probability);
+    write({
+      args: [data.name, probabilityEth],
+      overrides: { value: liquidityEth, gasLimit: 1e7 },
+    });
+  };
+
+  return onSubmit;
+};
+
+export const NewMarketForm = ({ contractAddr }: { contractAddr: string }) => {
+  const onSubmit = makeOnSubmit(contractAddr);
   const {
+    watch,
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<NewMarketData>();
 
-  const onSubmit: SubmitHandler<NewMarketData> = (data: NewMarketData) => {
-    console.log(data);
-  };
-
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="shadow-lg rounded-xl mt-7 p-7 w-full"
+      className="shadow-lg rounded-xl mt-7 p-8 w-full"
     >
       <ErrorsDisplay errors={errors} />
 
@@ -64,23 +121,7 @@ export const NewMarketForm = () => {
 
       <div className="form-control my-6">
         <Label name="Initial Probability" />
-        <div className="flex flex-row gap-10">
-          <label className="input-group basis-1/4">
-            <input
-              type="text"
-              {...register("probability", { required: true })}
-              className="input input-bordered w-14"
-              placeholder="42"
-            />
-            <span>%</span>
-          </label>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            className="range range-primary basis-3/4 my-auto"
-          />
-        </div>
+        <ProbabilityInput register={register} prob={watch("probability")} />
       </div>
 
       <div className="form-control my-6">
@@ -89,7 +130,10 @@ export const NewMarketForm = () => {
           <label className="input-group">
             <input
               type="text"
-              {...register("liquidity", { required: true })}
+              {...register("liquidity", {
+                required: true,
+                pattern: /[+-]?([0-9]*[.])?[0-9]+/,
+              })}
               className="input input-bordered"
               placeholder="0.01"
             />
