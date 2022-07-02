@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useContractWrite } from "wagmi";
+import { useContractEvent, useContractWrite } from "wagmi";
 import { ethers } from "ethers";
 
 import FactoryContract from "artifacts/contracts/MarketFactory.sol/MarketFactory.json";
@@ -93,6 +93,19 @@ const makeOnSubmit = (contractAddr: string) => {
   return onSubmit;
 };
 
+export const Events = ({ contractAddr }: { contractAddr: string }) => {
+  const [events, setEvents] = useState<Array<Event>>([]);
+  useContractEvent(
+    { addressOrName: contractAddr, contractInterface: FactoryContract.abi },
+    "NewMarket",
+    (newEvent) => {
+      setEvents((oldEvents) => [...oldEvents, newEvent]);
+    }
+  );
+
+  return <p>{JSON.stringify(events)}</p>;
+};
+
 export const NewMarketForm = ({ contractAddr }: { contractAddr: string }) => {
   const onSubmit = makeOnSubmit(contractAddr);
   const {
@@ -145,6 +158,8 @@ export const NewMarketForm = ({ contractAddr }: { contractAddr: string }) => {
       <button type="submit" className="btn btn-primary btn-lg mt-7">
         Create Market
       </button>
+
+      <Events contractAddr={contractAddr} />
     </form>
   );
 };
