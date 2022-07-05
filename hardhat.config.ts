@@ -33,9 +33,9 @@ const config: HardhatUserConfig = {
         enabled: true,
         runs: 1,
       },
-      // debug: {
-      //   revertStrings: "strip",
-      // },
+      debug: {
+        revertStrings: "strip",
+      },
     },
   },
   defaultNetwork: "localhost",

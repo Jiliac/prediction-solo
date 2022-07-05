@@ -82,8 +82,10 @@ const makeOnSubmit = (contractAddr: string) => {
   );
 
   const onSubmit: SubmitHandler<NewMarketData> = (data: NewMarketData) => {
+    const prob = (Number(data.probability) / 100).toString();
     const liquidityEth = ethers.utils.parseEther(data.liquidity);
-    const probabilityEth = ethers.utils.parseEther(data.probability);
+    const probabilityEth = ethers.utils.parseEther(prob);
+
     write({
       args: [data.name, probabilityEth],
       overrides: { value: liquidityEth, gasLimit: 1e7 },
