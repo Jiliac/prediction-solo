@@ -6,7 +6,7 @@ async function main() {
 
   console.log("Is factory deployed:", await factory.isDeployed());
 
-  const oneEth = ethers.utils.parseEther("1");
+  const oneEth = ethers.utils.parseEther("1.2");
   const prob = ethers.utils.parseEther("0.5");
   const tx = await factory.createMarket("A new market question", prob, {
     value: oneEth,
