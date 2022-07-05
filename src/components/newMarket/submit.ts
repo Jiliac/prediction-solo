@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { ethers } from "ethers";
 import { SubmitHandler } from "react-hook-form";
-import { useContractWrite } from "wagmi";
+import { useAccount, useContractWrite } from "wagmi";
 
 import FactoryContract from "artifacts/contracts/MarketFactory.sol/MarketFactory.json";
+import { useRouter } from "next/router";
 
 export interface NewMarketData {
   name: string;
@@ -11,13 +12,49 @@ export interface NewMarketData {
   liquidity: string;
 }
 
+const useOnSuccess = () => {
+  const router = useRouter();
+  const { data: account } = useAccount();
+
+  return async (data: any) => {
+    if (!data?.wait) return;
+
+    const tx = await data.wait();
+    if (!tx || !tx?.events) return;
+
+    const newMarketEvents = tx.events?.filter(
+      (e: any) => e?.event === "NewMarket"
+    ) as any;
+    if (
+      !newMarketEvents ||
+      !newMarketEvents?.length ||
+      newMarketEvents.length === 0
+    )
+      return;
+
+    const newMarketEvent = newMarketEvents[0]?.args;
+    if (!newMarketEvent) return;
+    const contractAddr = newMarketEvent?.contractAddr;
+    const owner = newMarketEvent?.ownerAddr;
+    if (!contractAddr || !owner) return;
+    console.log(contractAddr, owner);
+
+    const isOwner = account?.address === owner;
+    if (!isOwner) return;
+
+    router.push(`/${contractAddr}`);
+  };
+};
+
 export const makeOnSubmit = (contractAddr: string) => {
+  const onSuccess = useOnSuccess();
   const { write, isError, error } = useContractWrite(
     {
       addressOrName: contractAddr,
       contractInterface: FactoryContract.abi,
     },
-    "createMarket"
+    "createMarket",
+    { onSuccess }
   );
 
   const onSubmit: SubmitHandler<NewMarketData> = (data: NewMarketData) => {
@@ -32,10 +69,7 @@ export const makeOnSubmit = (contractAddr: string) => {
   };
 
   useEffect(() => {
-    if (isError) {
-      console.error("write error:", error);
-      console.error("error msg:", error?.message);
-    }
+    if (isError) console.error("Create Market error:", error);
   }, [isError, error]);
 
   return onSubmit;

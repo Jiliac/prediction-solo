@@ -1,24 +1,6 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useContractEvent } from "wagmi";
-
 import { makeOnSubmit, NewMarketData } from "./submit";
 import { Label, ErrorsDisplay, ProbabilityInput } from "./formUtils";
-
-import FactoryContract from "artifacts/contracts/MarketFactory.sol/MarketFactory.json";
-
-export const Events = ({ contractAddr }: { contractAddr: string }) => {
-  const [events, setEvents] = useState<Array<Event>>([]);
-  useContractEvent(
-    { addressOrName: contractAddr, contractInterface: FactoryContract.abi },
-    "NewMarket",
-    (newEvent) => {
-      setEvents((oldEvents) => [...oldEvents, newEvent]);
-    }
-  );
-
-  return <p>{JSON.stringify(events)}</p>;
-};
 
 export const NewMarketForm = ({ contractAddr }: { contractAddr: string }) => {
   const onSubmit = makeOnSubmit(contractAddr);
@@ -100,8 +82,6 @@ export const NewMarketForm = ({ contractAddr }: { contractAddr: string }) => {
       <button type="submit" className="btn btn-primary btn-lg mt-7">
         Create Market
       </button>
-
-      {/* <Events contractAddr={contractAddr} /> */}
     </form>
   );
 };
