@@ -1,8 +1,8 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.14;
 
 import "@prb/math/contracts/PRBMathUD60x18.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-//import "hardhat/console.sol";
+import "hardhat/console.sol";
 import "./Token.sol";
 
 /// @custom:security-contact valentin@invisoo.com

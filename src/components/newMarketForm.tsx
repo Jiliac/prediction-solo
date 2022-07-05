@@ -73,7 +73,7 @@ const ProbabilityInput = ({ register, prob }: any) => {
 };
 
 const makeOnSubmit = (contractAddr: string) => {
-  const { write } = useContractWrite(
+  const { write, isError, error } = useContractWrite(
     {
       addressOrName: contractAddr,
       contractInterface: FactoryContract.abi,
@@ -89,6 +89,13 @@ const makeOnSubmit = (contractAddr: string) => {
       overrides: { value: liquidityEth, gasLimit: 1e7 },
     });
   };
+
+  useEffect(() => {
+    if (isError) {
+      console.error("write error:", error);
+      console.error("error msg:", error?.message);
+    }
+  }, [isError, error]);
 
   return onSubmit;
 };
