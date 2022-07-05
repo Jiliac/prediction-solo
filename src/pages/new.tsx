@@ -1,7 +1,8 @@
 import { NextPage } from "next";
 import { useAccount } from "wagmi";
 
-import { NotLive, Connect, NewMarketForm } from "src/components";
+import { NotLive, Connect } from "src/components";
+import { NewMarketForm } from "src/components/newMarket";
 import { useContractAddr, useIsFactoryLive } from "src/hooks/contractAddress";
 
 const NewMarket: NextPage = () => {
