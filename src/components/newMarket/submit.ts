@@ -1,10 +1,11 @@
+import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { ethers } from "ethers";
 import { SubmitHandler } from "react-hook-form";
-import { useAccount, useContractWrite } from "wagmi";
+import { Chain, useAccount, useContractWrite, useNetwork } from "wagmi";
 
 import FactoryContract from "artifacts/contracts/MarketFactory.sol/MarketFactory.json";
-import { useRouter } from "next/router";
+import { Market, addMarket } from "src/models/market";
 
 export interface NewMarketData {
   name: string;
@@ -13,6 +14,7 @@ export interface NewMarketData {
 }
 
 const useOnSuccess = () => {
+  const { activeChain } = useNetwork();
   const router = useRouter();
   const { data: account } = useAccount();
 
@@ -41,6 +43,13 @@ const useOnSuccess = () => {
 
     const isOwner = account?.address === owner;
     if (!isOwner) return;
+
+    const market: Market = {
+      address: contractAddr,
+      owner: owner,
+      network: activeChain as Chain,
+    };
+    addMarket(market);
 
     router.push(`/${contractAddr}`);
   };

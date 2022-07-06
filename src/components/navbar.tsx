@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { useAccount, useDisconnect, useNetwork } from "wagmi";
-<div class="divider divider-horizontal">OR</div>;
 
 const printAddr = (fullAddr: string | undefined): string => {
   if (!fullAddr) return "";

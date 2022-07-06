@@ -22,7 +22,7 @@ export const NewMarketForm = ({ contractAddr }: { contractAddr: string }) => {
         <Label name="Question" />
         <input
           type="text"
-          placeholder="Where will the sun rise?"
+          placeholder="Will the sun rise tomorrow?"
           {...register("name", { required: true })}
           className="input input-bordered"
         />
