@@ -44,7 +44,7 @@ export const Navbar = () => {
         <a className="btn btn-ghost normal-case text-xl">Invisoo</a>
       </div>
       <div className="navbar-center">
-        <Link href="/">
+        <Link href="/search">
           <a className="btn btn-ghost normal-case text-xl">Home</a>
         </Link>
         <div className="divider divider-horizontal py-2 mx-1"></div>
