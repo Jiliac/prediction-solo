@@ -14,6 +14,7 @@ const Search: NextPage = () => {
         <article className="prose mb-7">
           <h1>Existing Markets</h1>
         </article>
+
         <div>
           {values &&
             values.map((value) => (

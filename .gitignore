@@ -10,3 +10,6 @@ artifacts
 
 # Next
 .next
+
+# Firebase Emulators
+*-debug.log
