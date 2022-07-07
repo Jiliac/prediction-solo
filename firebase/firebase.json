@@ -1,14 +1,16 @@
 {
   "firestore": {
-    "rules": "src/models/firestore.rules",
-    "indexes": "src/models/firestore.indexes.json"
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
   },
   "emulators": {
     "firestore": {
+      "host": "0.0.0.0",
       "port": 8888
     },
     "ui": {
       "enabled": true,
+      "host": "0.0.0.0",
       "port": 1313
     }
   }
