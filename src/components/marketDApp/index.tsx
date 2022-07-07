@@ -1,10 +1,10 @@
-import { ContractInfo } from "./contractInfo";
+import { useReadMarket, useIsOwner } from "src/hooks";
+import { ContractInfo } from "src/components/contractInfo";
+
 import { Betting } from "./betting";
 import { Events } from "./events";
 import { Resolution, ResolvedStatus } from "./resolution";
 import { Claim } from "./claim";
-
-import { useReadMarket, useIsOwner } from "../hooks";
 
 export const DAppV2 = ({ contractAddr }: { contractAddr: string }) => {
   const isOwner = useIsOwner(contractAddr);

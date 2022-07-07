@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useResolve, useReadMarket } from "../hooks";
+import { useResolve, useReadMarket } from "src/hooks";
 
 const YesEnum = 0;
 const NoEnum = 1;
