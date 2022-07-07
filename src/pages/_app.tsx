@@ -23,8 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
         </Head>
 
         <Navbar />
-
-        <div className="hero min-h-screen">
+        <div className="hero" style={{ minHeight: "90vh" }}>
           <div className="hero-content text-center">
             <Component {...pageProps} />
           </div>

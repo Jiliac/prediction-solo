@@ -5,7 +5,8 @@ import { collection } from "firebase/firestore";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 
 import { db } from "src/models/firebase";
-import { Connect } from "src/components";
+import { Connect, SummaryCard } from "src/components";
+import { Market } from "src/models/market";
 
 const Search: NextPage = () => {
   const [values] = useCollectionData(collection(db, "markets"));
@@ -25,11 +26,7 @@ const Search: NextPage = () => {
             values.map((value) => (
               <Link href={`/${value.address}`}>
                 <a>
-                  <div className="rounded-lg shadow-lg py-6 my-4 bg-base-100">
-                    <p>Address: {value.address}</p>
-                    <p>Owner: {value.owner}</p>
-                    <p>Network: {value.network?.name}</p>
-                  </div>
+                  <SummaryCard market={value as Market} />
                 </a>
               </Link>
             ))}
