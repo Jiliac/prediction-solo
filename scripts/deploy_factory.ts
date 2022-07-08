@@ -2,7 +2,7 @@ import { ethers } from "hardhat";
 
 async function main() {
   const Factory = await ethers.getContractFactory("MarketFactory");
-  const factory = await Factory.deploy();
+  const factory = await Factory.deploy({ gasLimit: 1e6 });
   await factory.deployed();
   console.log("Factory deployed to:", factory.address);
 }
