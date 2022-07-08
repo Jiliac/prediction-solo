@@ -10,6 +10,7 @@ import { Market } from "src/models/market";
 
 const useDeployedMarkets = (): Market[] => {
   const { activeChain } = useNetwork();
+  if (!activeChain?.id) return [];
   const marketsRef = collection(db, "markets");
   const networkQuery = query(
     marketsRef,
