@@ -1,4 +1,4 @@
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.14;
 
 import "@prb/math/contracts/PRBMathUD60x18.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -45,15 +45,15 @@ contract Market is Ownable {
   }
 
   event BetMade(
-      bool outcome,
-      address better,
-      uint amount,
-      uint betSize,
-      uint yesTot,
-      uint noTot,
-      uint ammYes,
-      uint ammNo
-      );
+    bool outcome,
+    address better,
+    uint amount,
+    uint betSize,
+    uint yesTot,
+    uint noTot,
+    uint ammYes,
+    uint ammNo
+  );
 
   // Outcome: true means the better wants to bet on YES.
   // If outcome is false, the better wants to bet on NO.

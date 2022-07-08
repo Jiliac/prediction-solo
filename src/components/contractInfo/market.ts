@@ -7,4 +7,5 @@ export interface Market {
 
   yesTokenTotSupply: string;
   noTokenTotSupply: string;
+  volume: string;
 }

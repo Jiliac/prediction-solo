@@ -2,6 +2,33 @@ import { useState, useEffect } from "react";
 import { useAccount, useContractRead, useNetwork } from "wagmi";
 
 import MarketContract from "artifacts/contracts/Market.sol/Market.json";
+import FactoryContract from "artifacts/contracts/MarketFactory.sol/MarketFactory.json";
+
+export const useIsFactoryLive = (contractAddr: string) => {
+  const [isLive, setIsLive] = useState<boolean>(false);
+  const { data: account } = useAccount();
+  const { isError, isLoading, error } = useContractRead(
+    { addressOrName: contractAddr, contractInterface: FactoryContract.abi },
+    "isDeployed",
+    {
+      overrides: { from: account?.address },
+    }
+  );
+
+  useEffect(() => {
+    if (isError) {
+      console.error(error);
+    }
+
+    if (!contractAddr || !account || isLoading || isError) {
+      setIsLive(false);
+    } else {
+      setIsLive(true);
+    }
+  }, [contractAddr, account, isLoading, isError]);
+
+  return isLive;
+};
 
 export const useIsContractLive = (contractAddr: string) => {
   const [isLive, setIsLive] = useState<boolean>(false);

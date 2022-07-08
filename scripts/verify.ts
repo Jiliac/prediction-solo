@@ -1,14 +1,13 @@
-import { ethers, run } from "hardhat";
+import { run } from "hardhat";
 
-const { NEXT_PUBLIC_POLYGON_CONTRACT } = process.env;
+const { NEXT_PUBLIC_MUMBAI_CONTRACT, NEXT_PUBLIC_POLYGON_CONTRACT } =
+  process.env;
+const addrToVerify = NEXT_PUBLIC_MUMBAI_CONTRACT;
 
 async function main() {
   await run("verify:verify", {
-    address: NEXT_PUBLIC_POLYGON_CONTRACT,
-    constructorArguments: [
-      "Will G.R.R. Martin publish an ASOIAF book in 2022?",
-      ethers.utils.parseEther("0.2"),
-    ],
+    address: addrToVerify,
+    constructorArguments: [],
   });
 }
 

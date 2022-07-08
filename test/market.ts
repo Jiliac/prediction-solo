@@ -34,26 +34,21 @@ describe("Market", () => {
 
     it("should fail if the probably is too low", async () => {
       const Market = await ethers.getContractFactory("Market");
-      await expect(Market.deploy(mockName, 0)).to.be.revertedWith(
-        "Need a strictly positive initial probability"
-      );
+      await expect(Market.deploy(mockName, 0)).to.be.reverted;
     });
 
     it("should fail if the probably is too high", async () => {
       const overMaxProb = ethers.utils.parseEther("1.2");
       const Market = await ethers.getContractFactory("Market");
-      await expect(Market.deploy(mockName, overMaxProb)).to.be.revertedWith(
-        "Probability between 0 and 1 strictly. 18 decimals."
-      );
+      await expect(Market.deploy(mockName, overMaxProb)).to.be.reverted;
     });
 
     it("should fail with a low ETH amount", async () => {
       const lowEth = ethers.utils.parseEther(".99");
       const Market = await ethers.getContractFactory("Market");
 
-      await expect(
-        Market.deploy("", mockProb, { value: lowEth })
-      ).to.be.revertedWith("Need enough liquidity to be initialized");
+      await expect(Market.deploy("", mockProb, { value: lowEth })).to.be
+        .reverted;
     });
   });
 
@@ -213,9 +208,7 @@ describe("Market", () => {
       await market.resolve(NoEnum);
       expect(await market.resolvedOutcome()).to.equal(NoEnum);
 
-      await expect(market.bet(true)).to.be.revertedWith(
-        "Market cannot be betted on once resolved"
-      );
+      await expect(market.bet(true)).to.be.reverted;
     });
 
     it("should not be able to bet after market resolution", async () => {
@@ -228,9 +221,7 @@ describe("Market", () => {
       await market.resolve(NaEnum);
       expect(await market.resolvedOutcome()).to.equal(NaEnum);
 
-      await expect(market.resolve(NaEnum)).to.be.revertedWith(
-        "Market can only be resolved once"
-      );
+      await expect(market.resolve(NaEnum)).to.be.reverted;
     });
 
     it("should not be able to claim reward on unresolved market", async () => {
@@ -240,9 +231,7 @@ describe("Market", () => {
       });
       await market.deployed();
 
-      await expect(market.claimReward()).to.be.revertedWith(
-        "Market is not resolved yet"
-      );
+      await expect(market.claimReward()).to.be.reverted;
     });
 
     it("should send fund to owner after resolution", async () => {
@@ -383,7 +372,7 @@ describe("Market", () => {
       const market = await Market.deploy("", mockProb, { value: someEth });
       await market.deployed();
 
-      await expect(market.renounceOwnership()).to.be.revertedWith("disabled");
+      await expect(market.renounceOwnership()).to.be.reverted;
     });
 
     it("Should not be able to transfer ownership", async () => {
@@ -392,9 +381,7 @@ describe("Market", () => {
       await market.deployed();
 
       const [, better] = await ethers.getSigners();
-      await expect(market.transferOwnership(better.address)).to.be.revertedWith(
-        "disabled"
-      );
+      await expect(market.transferOwnership(better.address)).to.be.reverted;
     });
   });
 });

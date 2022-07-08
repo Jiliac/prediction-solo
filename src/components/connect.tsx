@@ -41,13 +41,13 @@ export const NotLive = () => {
   return (
     <div className="container">
       <article className="prose">
-        <h2>Contract is not live on this network.</h2>
+        <h2>The market is not live on this network.</h2>
         <p>
-          Checkout{" "}
+          The live deployment is on{" "}
           <a href="https://support.opensea.io/hc/en-us/articles/1500011368842-How-can-I-switch-my-wallet-to-blockchains-like-Polygon">
             Polygon
-          </a>{" "}
-          for the a live deployment.
+          </a>
+          {"."}
         </p>
       </article>
     </div>

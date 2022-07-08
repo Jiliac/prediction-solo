@@ -22,4 +22,15 @@ services:
     ports:
       - 3000:3000
     volumes:
+      - ./artifacts:/app/artifacts:z
       - ./src:/app/src:z
+
+  firebase:
+    image: andreysenov/firebase-tools
+    ports:
+      - 1313:1313
+      - 8888:8888
+      - 9005:9005
+    volumes:
+      - ./firebase:/home/node:z
+    command: ["firebase", "emulators:start"]
