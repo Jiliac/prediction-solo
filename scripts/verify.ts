@@ -2,7 +2,7 @@ import { run } from "hardhat";
 
 const { NEXT_PUBLIC_MUMBAI_CONTRACT, NEXT_PUBLIC_POLYGON_CONTRACT } =
   process.env;
-const addrToVerify = NEXT_PUBLIC_MUMBAI_CONTRACT;
+const addrToVerify = NEXT_PUBLIC_POLYGON_CONTRACT;
 
 async function main() {
   await run("verify:verify", {
