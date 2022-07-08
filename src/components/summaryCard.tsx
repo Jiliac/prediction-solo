@@ -26,7 +26,7 @@ export const SummaryCard = ({ market }: { market: Market }) => {
       <p>Probability: {marketInfo.probability}</p>
       <p>Volume: {marketInfo.yesTokenTotSupply}</p>
       <p>
-        Is Resolved? {"=>"} {isResolved.toString()}
+        Is Resolved? {"=>"} {isResolved?.toString()}
       </p>
     </div>
   );
