@@ -10,12 +10,11 @@ import { Market } from "src/models/market";
 
 const useDeployedMarkets = (): Market[] => {
   const { activeChain } = useNetwork();
-  if (!activeChain?.id) return [];
+  const chainId = activeChain?.id;
+  if (!chainId) return [];
+
   const marketsRef = collection(db, "markets");
-  const networkQuery = query(
-    marketsRef,
-    where("network.id", "==", activeChain?.id)
-  );
+  const networkQuery = query(marketsRef, where("network.id", "==", chainId));
   const [values] = useCollectionData(networkQuery);
 
   return values as Market[];
@@ -51,8 +50,8 @@ const Search: NextPage = () => {
 
         <div>
           {values &&
-            values.map((value) => (
-              <Link href={`/${value.address}`}>
+            values.map((value, index) => (
+              <Link href={`/${value.address}`} key={index}>
                 <a>
                   <SummaryCard market={value as Market} />
                 </a>

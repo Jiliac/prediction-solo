@@ -2,6 +2,7 @@ import { useIsContractLive, useMarketInfos, useReadMarket } from "src/hooks";
 import { Market } from "src/models/market";
 
 const formatProb = (probStr: string | undefined): string => {
+  if (!probStr) return "";
   const prob = Math.round(Number(probStr) * 100);
   return prob.toString() + " %";
 };
@@ -25,14 +26,14 @@ export const SummaryCard = ({ market }: { market: Market }) => {
       </div>
     );
 
-  const prob = formatProb(marketInfo.probability);
+  const prob = formatProb(marketInfo?.probability);
 
   return (
     <div className="rounded-lg shadow-lg py-6 my-4 bg-base-100">
       <div className="flex flex-row px-4">
         <div className="basis-5/6">
-          <p className="text-xl font-bold">{marketInfo.name}</p>
-          <p>Volume: {marketInfo.volume}</p>
+          <p className="text-xl font-bold">{marketInfo?.name}</p>
+          <p>Volume: {marketInfo?.volume}</p>
           {isResolved && (
             <div className="badge badge-primary mx-auto mt-2">Resolved</div>
           )}
